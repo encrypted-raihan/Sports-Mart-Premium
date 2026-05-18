@@ -225,17 +225,98 @@ body::after{
 
 /* Nav */
 .nav-shell{
-  position:fixed;top:0;left:0;right:0;z-index:800;
-  background:rgba(6,8,12,.74);
-  border-bottom:1px solid rgba(255,255,255,.06);
-  transition:box-shadow .3s ease;
+  position:fixed;
+  top:14px;
+  left:50%;
+  transform:translateX(-50%);
+
+  width:min(calc(100% - 24px), 1480px);
+
+  z-index:800;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.10),
+      rgba(255,255,255,.04)
+    );
+
+  backdrop-filter:blur(22px) saturate(180%);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+
+  border:1px solid rgba(255,255,255,.10);
+
+  border-radius:26px;
+
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -1px 0 rgba(255,255,255,.03);
+
+  overflow:hidden;
+
+  transition:
+    background .3s ease,
+    border-color .3s ease,
+    transform .3s ease,
+    box-shadow .3s ease;
+}
+.nav-shell::before{
+  content:"";
+
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      120deg,
+      rgba(255,255,255,.16) 0%,
+      rgba(255,255,255,.03) 32%,
+      transparent 55%
+    );
+
+  pointer-events:none;
+}
+
+.nav-shell::after{
+  content:"";
+
+  position:absolute;
+  inset:auto 0 0 0;
+  height:1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(200,245,66,.28),
+      transparent
+    );
+
+  opacity:.7;
 }
 .nav{
-  height:72px;
+  height:76px;
   display:grid;
-  grid-template-columns: 320px 1fr auto auto;
-  align-items:stretch;
+  grid-template-columns: 280px 1fr 280px;
+  align-items:center;
 }
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.2rem;
+
+  list-style:none;
+  margin:0;
+  padding:0;
+
+  border:none;
+}
+.nav-logo,
+.nav-ticker,
+
 .nav-logo{
   padding:0 1.6rem;display:flex;align-items:center;gap:1rem;
   border-right:1px solid rgba(255,255,255,.06);text-decoration:none;
@@ -244,10 +325,86 @@ body::after{
 .logo-mark .em{color:var(--acid)}
 .logo-sub{margin-top:.25rem;font-family:var(--font-mono);font-size:.58rem;color:var(--sub);letter-spacing:.14em;text-transform:uppercase;}
 .nav-ticker{overflow:hidden;display:flex;align-items:center;border-right:1px solid rgba(255,255,255,.06);}
-.ticker{display:flex;gap:0;white-space:nowrap;animation:ticker 20s linear infinite;}
-.ticker-item{display:inline-flex;align-items:center;gap:.55rem;padding:0 1.35rem;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);}
-.ticker-item .dot{color:var(--acid);font-size:.7rem}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker{
+  display:flex;
+  align-items:center;
+
+  width:fit-content;
+
+  animation:liquidTicker 30s linear infinite;
+}
+
+.nav-ticker::before,
+.nav-ticker::after{
+  content:"";
+
+  position:absolute;
+  top:0;
+  bottom:0;
+
+  width:80px;
+
+  z-index:2;
+  pointer-events:none;
+}
+
+.nav-ticker::before{
+  left:0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(22,15,10,.92),
+      transparent
+    );
+}
+.nav-ticker{
+  position:relative;
+
+  overflow:hidden;
+
+  min-width:0;
+
+  display:flex;
+  align-items:center;
+
+  border-right:1px solid rgba(255,255,255,.06);
+}
+.nav-ticker::after{
+  right:0;
+
+  background:
+    linear-gradient(
+      -90deg,
+      rgba(22,15,10,.92),
+      transparent
+    );
+}
+.ticker-item{
+  flex:none;
+
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+
+  padding:0 2rem;
+
+  font-family:var(--font-mono);
+  font-size:.62rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+
+  color:var(--sub);
+}
+@keyframes liquidTicker{
+  from{
+    transform:translateX(0);
+  }
+
+  to{
+    transform:translateX(-33.333%);
+  }
+}
 .nav-links{display:flex;align-items:stretch;list-style:none;margin:0;padding:0;border-right:1px solid rgba(255,255,255,.06);}
 .nav-links a{
   display:flex;align-items:center;height:72px;padding:0 1.15rem;
@@ -266,7 +423,7 @@ body::after{
 .nav-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
   padding:.85rem 1rem;min-height:44px;border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.03);border-radius:999px;color:var(--text);
+  background:rgba(255,255,255,.05);border-radius:999px;color:var(--text);
   text-decoration:none;font-family:var(--font-head);font-size:.8rem;
   font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
   transition:transform .18s ease,background .18s ease,border-color .18s ease;
@@ -411,14 +568,76 @@ body::after{
 
 /* Sport bar */
 .sport-bar{
-  height:56px;display:flex;align-items:center;overflow:hidden;
-  background:linear-gradient(90deg,var(--fire),var(--fire2));
-  border-block:1px solid rgba(255,255,255,.08);
+  position:relative;
+  height:70px;
+
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ff3c12,
+      #ff4d1f
+    );
+
+  border-block:
+    1px solid rgba(255,255,255,.08);
 }
-.sport-track{display:flex;white-space:nowrap;animation:ticker2 24s linear infinite;}
-.sb-item{display:inline-flex;align-items:center;gap:.6rem;padding:0 1.8rem;font-family:var(--font-head);font-size:1.05rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#fff;}
-.sb-item .sb-dot{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.65)}
-@keyframes ticker2{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.sport-track{
+  display:flex;
+  align-items:center;
+
+  width:max-content;
+
+  flex:none;
+
+  animation:sportMarquee 18s linear infinite;
+}
+
+.sb-item{
+  flex:none;
+
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+
+  padding:0 2.4rem;
+
+  font-family:var(--font-head);
+  font-size:1.1rem;
+  font-weight:900;
+
+  letter-spacing:.12em;
+  text-transform:uppercase;
+
+  color:#fff;
+
+  white-space:nowrap;
+}
+
+.sb-dot{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+
+  background:rgba(255,255,255,.72);
+
+  flex:none;
+}
+
+@keyframes sportMarquee{
+  from{
+    transform:translateX(0);
+  }
+
+  to{
+    transform:translateX(-50%);
+  }
+}
 
 /* Section base */
 section{padding:clamp(4rem,7vw,6rem) clamp(1.2rem,4vw,3.5rem);}
@@ -476,11 +695,29 @@ section{padding:clamp(4rem,7vw,6rem) clamp(1.2rem,4vw,3.5rem);}
   gap:2rem;align-items:start;margin-top:1.8rem;
 }
 .sidebar{
-  position:sticky;top:92px;
-  background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius);padding:1.2rem;box-shadow:var(--shadow2);
-  backdrop-filter:blur(14px);
+  position:sticky;
+  top:92px;
+
+  padding:1rem;
+
+  border-radius:22px;
+
+  max-width:230px;
 }
+
+.sidebar-head{
+  padding-bottom:.7rem;
+  margin-bottom:.8rem;
+}
+
+.sidebar-title{
+  font-size:1rem;
+}
+
+.sidebar-sub{
+  font-size:.52rem;
+}
+
 .sidebar-head{
   display:flex;align-items:center;justify-content:space-between;gap:1rem;
   padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.06);
@@ -489,7 +726,54 @@ section{padding:clamp(4rem,7vw,6rem) clamp(1.2rem,4vw,3.5rem);}
 .sidebar-sub{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.14em;color:var(--sub);text-transform:uppercase;}
 .filter-group{margin-bottom:1rem}
 .filter-group h4{margin:.25rem 0 .7rem;font-family:var(--font-head);font-size:.96rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--text);}
-.filter-list{display:flex;flex-wrap:wrap;gap:.5rem;flex-direction:column;gap:.45rem;}
+
+
+.filter-btn{
+  min-height:34px;
+
+  padding:.42rem .8rem;
+
+  font-size:.52rem;
+
+  border-radius:999px;
+}
+
+.sidebar{
+  padding:.9rem 1rem;
+}
+
+.quick-card{
+  margin-top:.55rem;
+
+  padding:.8rem;
+}
+
+.quick-card .emoji{
+  display:none;
+}
+
+.quick-card .title{
+  font-size:.92rem;
+
+  margin-bottom:.15rem;
+}
+
+.quick-card .sub{
+  font-size:.68rem;
+
+  line-height:1.45;
+
+  margin-bottom:.55rem;
+}
+
+.quick-card a{
+  min-height:38px;
+
+  padding:.55rem .75rem;
+
+  font-size:.66rem;
+}
+
 .filter-btn{
   appearance:none;border:1px solid rgba(255,255,255,.08);
   background:rgba(255,255,255,.025);color:var(--muted);border-radius:999px;
@@ -531,7 +815,72 @@ section{padding:clamp(4rem,7vw,6rem) clamp(1.2rem,4vw,3.5rem);}
 .search input{width:100%;background:none;border:none;outline:none;color:var(--text);font-size:.92rem;}
 .search input::placeholder{color:rgba(180,174,166,.75)}
 .sort-wrap{display:flex;align-items:center;gap:.55rem;color:var(--sub);font-family:var(--font-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;}
-.sort-select{appearance:none;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);color:var(--text);border-radius:999px;padding:.74rem 1rem;min-width:190px;outline:none;}
+.sort-select{
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+
+  min-width:220px;
+  height:52px;
+
+  padding:0 1.2rem;
+
+  border-radius:999px;
+
+  border:1px solid rgba(255,255,255,.08);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.05),
+      rgba(255,255,255,.025)
+    );
+
+  backdrop-filter:blur(18px);
+
+  color:var(--text);
+
+  font-family:var(--font-body);
+  font-size:.95rem;
+  font-weight:600;
+
+  outline:none;
+
+  cursor:pointer;
+
+  transition:
+    border-color .2s ease,
+    background .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
+}
+
+.sort-select:hover{
+  border-color:rgba(200,245,66,.28);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(200,245,66,.08),
+      rgba(255,255,255,.03)
+    );
+}
+
+.sort-select:focus{
+  border-color:rgba(200,245,66,.45);
+
+  box-shadow:
+    0 0 0 4px rgba(200,245,66,.08),
+    0 12px 30px rgba(0,0,0,.22);
+}
+
+/* dropdown options */
+.sort-select option{
+  background:#0E131A;
+  color:#F2EFE9;
+
+  padding:12px;
+}
 .products-grid{
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);
@@ -728,9 +1077,47 @@ section{padding:clamp(4rem,7vw,6rem) clamp(1.2rem,4vw,3.5rem);}
 .map-btn.alt{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--text);}
 
 /* Footer */
-footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.01);}
-.footer-top{padding-top:0;}
-.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2rem;padding-top:0;}
+footer{
+  position:relative;
+
+  border-top:1px solid rgba(255,255,255,.06);
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(200,245,66,.05),
+      transparent 45%
+    ),
+    rgba(255,255,255,.01);
+
+  overflow:hidden;
+}
+.footer-top{
+  padding-top:0;
+
+  width:min(100%,1500px);
+
+  margin:0 auto;
+}
+.footer-grid{
+  display:grid;
+
+  grid-template-columns:
+    minmax(280px,1.6fr)
+    repeat(3,minmax(160px,.8fr));
+
+  gap:clamp(2rem,4vw,5rem);
+
+  align-items:start;
+
+  width:min(100%,1400px);
+
+  margin:0 auto;
+
+  padding:
+    clamp(2rem,4vw,3rem)
+    clamp(1rem,3vw,2rem);
+}
 .footer-brand .logo{font-family:var(--font-head);font-size:2rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;line-height:1;}
 .footer-brand .logo .em{color:var(--acid)}
 .footer-location{margin:.45rem 0 1rem;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);}
@@ -747,7 +1134,25 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
 .footer-links a{display:flex;gap:.5rem;align-items:center;text-decoration:none;color:var(--muted);font-size:.84rem;}
 .footer-links a::before{content:"—";opacity:.35;}
 .footer-links a:hover{color:var(--text)}
-.footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.2rem 0 0;margin-top:1.2rem;border-top:1px solid rgba(255,255,255,.06);}
+.footer-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  gap:1rem;
+
+  width:min(100%,1400px);
+
+  margin:
+    0 auto;
+
+  padding:
+    1.4rem
+    clamp(1rem,3vw,2rem)
+    2rem;
+
+  border-top:1px solid rgba(255,255,255,.06);
+}
 .footer-copy,.footer-made{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.22);}
 
 /* Cart / Drawers */
@@ -852,19 +1257,81 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
   .footer-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:920px){
-  .nav{grid-template-columns:1fr auto auto}
-  .nav-logo{padding-inline:1rem}
-  .nav-ticker{display:none}
-  .nav-actions .nav-btn:not(.wa){display:none}
-  .menu-btn{display:inline-flex}
-  .hero-left,.hero-right{padding-inline:1rem}
-  .hero-left{padding-top:2rem}
-  .hero-title{font-size:clamp(4rem,18vw,7rem)}
-  .cat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cat-item.large{grid-column:span 2}
-  .products-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .steps{grid-template-columns:1fr}
-  .reviews-grid{grid-template-columns:1fr}
+
+  .nav{
+    grid-template-columns:1fr auto auto
+  }
+
+  .nav-logo{
+    padding-inline:1rem
+  }
+
+  .nav-ticker{
+    display:none
+  }
+
+  .nav-actions .nav-btn:not(.wa){
+    display:none
+  }
+
+  .menu-btn{
+    display:inline-flex
+  }
+
+  .hero-left,
+  .hero-right{
+    padding-inline:1rem
+  }
+
+  .hero-left{
+    padding-top:2rem
+  }
+
+  .hero-title{
+    font-size:clamp(4rem,18vw,7rem)
+  }
+
+  .cat-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+
+  .cat-item.large{
+    grid-column:span 2
+  }
+
+  /* ===== PRODUCTS ===== */
+
+  .products-layout{
+    grid-template-columns:1fr;
+    gap:1rem;
+  }
+
+  .sidebar{
+    position:relative;
+    top:auto;
+
+    padding:1rem;
+
+    border-radius:20px;
+  }
+
+  .products-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+
+  .steps{
+    grid-template-columns:1fr
+  }
+
+  .reviews-grid{
+    grid-template-columns:1fr
+  }
+
+  .footer-grid{
+  grid-template-columns:1fr 1fr;
+
+  gap:2rem;
+}
 }
 @media(max-width:680px){
   .hero{padding-top:72px}
@@ -887,12 +1354,830 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
   .drawer-foot .actions{grid-template-columns:1fr}
   .mobile-cta{grid-template-columns:1fr}
   section{padding-inline:1rem}
+  .footer-grid{
+  grid-template-columns:1fr;
 }
+
+.footer-bottom{
+  flex-direction:column;
+  align-items:flex-start;
+}
+
+
+  /* =========================
+   MOBILE FILTER REDESIGN
+========================= */
+@media(max-width:920px){
+
+  .products-layout{
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+  }
+
+  .sidebar{
+    position:relative;
+    top:auto;
+
+    width:100%;
+    max-width:none;
+
+    padding:0;
+    background:none;
+    border:none;
+    box-shadow:none;
+  }
+
+  .filter-group h4{
+    margin:0 0 .65rem .25rem;
+
+    font-size:.68rem;
+    letter-spacing:.18em;
+
+    color:var(--sub);
+  }
+.filter-row{
+  display:flex;
+  gap:1rem;
+
+  padding-inline:.35rem;
+}
+.filter-btn{
+  padding:.8rem 1.2rem;
+}
+  .filter-row{
+    display:flex;
+    gap:2rem;
+
+    overflow-x:auto;
+    overflow-y:hidden;
+
+    padding:.2rem .1rem .7rem;
+
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+
+    scrollbar-width:none;
+  }
+
+  .filter-row::-webkit-scrollbar{
+    display:none;
+  }
+
+  .filter-btn{
+    flex:none;
+
+    scroll-snap-align:start;
+
+    min-height:42px;
+
+    padding:.8rem 1rem;
+
+    border-radius:999px;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.07),
+        rgba(255,255,255,.03)
+      );
+
+    backdrop-filter:blur(14px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:var(--muted);
+
+    font-size:.58rem;
+    font-weight:700;
+    letter-spacing:.14em;
+
+    white-space:nowrap;
+
+    transition:
+      transform .2s ease,
+      border-color .2s ease,
+      background .2s ease;
+  }
+
+  .filter-btn:active{
+    transform:scale(.96);
+  }
+
+  .filter-btn.active{
+    background:
+      linear-gradient(
+        135deg,
+        var(--acid),
+        #EAFB96
+      );
+
+    color:#000;
+
+    border-color:transparent;
+
+    box-shadow:
+      0 10px 24px rgba(200,245,66,.22);
+  }
+
+  .main-toolbar{
+    flex-direction:column;
+    align-items:stretch;
+
+    gap:.9rem;
+  }
+
+  .toolbar-left,
+  .toolbar-right{
+    width:100%;
+  }
+
+  .search{
+    width:100%;
+    min-width:0;
+  }
+
+  .sort-wrap{
+    width:100%;
+  }
+
+  .sort-select{
+    width:100%;
+    min-width:0;
+  }
+}
+
+.filter-row::after{
+  content:"";
+  padding-right:.2rem;
+}
+}
+
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}
   .cursor,.cursor-ring{display:none}
 }
+
+/* ===== FILTERS CLEAN ===== */
+
+.filter-group{
+  margin-bottom:1.25rem;
+}
+
+.filter-group h4{
+  margin:.15rem 0 .75rem;
+  font-family:var(--font-head);
+  font-size:.92rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-weight:800;
+  color:var(--text);
+}
+
+.filter-list,
+#sportFilters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.75rem;
+  align-items:flex-start;
+  margin:0;
+  padding:0;
+}
+
+.filter-btn{
+  appearance:none;
+  -webkit-appearance:none;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.025);
+  color:var(--muted);
+  border-radius:999px;
+  padding:.62rem .95rem;
+  margin:0;
+  cursor:pointer;
+  transition:
+    transform .18s ease,
+    color .18s ease,
+    background .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease;
+  font-family:var(--font-mono);
+  font-size:.58rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.filter-btn:hover{
+  transform:translateY(-1px);
+  border-color:rgba(200,245,66,.3);
+  color:var(--text);
+  background:rgba(200,245,66,.05);
+}
+
+.filter-btn.active{
+  color:#000;
+  background:linear-gradient(135deg,var(--acid),#EAFB96);
+  border-color:transparent;
+  box-shadow:0 12px 24px rgba(200,245,66,.12);
+}
+
+.quick-card{
+  margin-top:1rem;
+  border-radius:20px;
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,.035),
+    rgba(255,255,255,.02)
+  );
+  border:1px solid rgba(255,255,255,.06);
+  padding:1rem;
+}
+
+.quick-card .emoji{
+  font-size:1.8rem;
+  margin-bottom:.5rem;
+}
+
+.quick-card .title{
+  margin:0 0 .3rem;
+  font-family:var(--font-head);
+  font-size:1.2rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  font-weight:900;
+}
+
+.quick-card .sub{
+  margin:0 0 .9rem;
+  color:var(--muted);
+  font-size:.82rem;
+  line-height:1.7;
+}
+
+.quick-card a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.45rem;
+  width:100%;
+  border-radius:14px;
+  background:#25D366;
+  color:#000;
+  text-decoration:none;
+  padding:.8rem .9rem;
+  font-family:var(--font-head);
+  font-size:.84rem;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+
+/* ============================================================
+   HYBRID PRODUCT RAIL SYSTEM
+   Major change: product browsing is now a vertical stack of
+   horizontal rails with drag, wheel-to-horizontal, snap points,
+   lazy batches, and dedicated rail controls.
+============================================================ */
+.products-main{min-width:0}
+.rail-legend{
+  margin:0 0 1rem;
+  font-family:var(--font-mono);
+  font-size:.64rem;
+  line-height:1.6;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--sub);
+}
+
+.rail-stack{
+  display:flex;
+  flex-direction:column;
+  gap:1.4rem;
+  min-width:0;
+}
+
+.product-rail{
+  display:flex;
+  flex-direction:column;
+  gap:.9rem;
+  min-width:0;
+}
+
+.rail-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+}
+
+.rail-eyebrow{
+  margin-bottom:.45rem;
+  font-family:var(--font-mono);
+  font-size:.58rem;
+  line-height:1;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--acid);
+}
+
+.rail-title{
+  margin:0;
+  font-family:var(--font-head);
+  font-size:clamp(1.7rem,2.2vw,2.5rem);
+  font-weight:900;
+  line-height:.9;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.rail-sub{
+  margin:.4rem 0 0;
+  max-width:66ch;
+  color:var(--muted);
+  font-size:.92rem;
+  line-height:1.7;
+}
+
+.rail-meta{
+  font-family:var(--font-mono);
+  font-size:.58rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--sub);
+  white-space:nowrap;
+}
+
+.rail-shell{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:28px;
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+  box-shadow:var(--shadow2);
+}
+
+.rail-shell::before,
+.rail-shell::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:62px;
+  pointer-events:none;
+  z-index:2;
+}
+
+.rail-shell::before{
+  left:0;
+  background:linear-gradient(90deg, rgba(6,8,12,.94), transparent);
+}
+
+.rail-shell::after{
+  right:0;
+  background:linear-gradient(-90deg, rgba(6,8,12,.94), transparent);
+}
+
+.rail-viewport{
+  display:flex;
+  align-items:stretch;
+  gap:1rem;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:1rem 1.15rem 1.1rem;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none;
+  touch-action:pan-x;
+  cursor:grab;
+  mask-image:linear-gradient(90deg, transparent 0, #000 56px, #000 calc(100% - 56px), transparent 100%);
+}
+
+.rail-viewport::-webkit-scrollbar{display:none}
+.rail-viewport.dragging{cursor:grabbing}
+
+.rail-track{
+  display:flex;
+  align-items:stretch;
+  gap:1rem;
+  min-width:0;
+}
+
+.rail-card{
+  flex:0 0 clamp(260px, 24vw, 340px);
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  content-visibility:auto;
+  contain-intrinsic-size:340px 440px;
+  overflow:hidden;
+  position:relative;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:24px;
+  background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.018));
+  box-shadow:0 20px 44px rgba(0,0,0,.14);
+  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
+}
+
+.rail-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(200,245,66,.26);
+  box-shadow:0 26px 58px rgba(0,0,0,.26);
+}
+
+.rail-media{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:220px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255,255,255,.14), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  font-size:4.35rem;
+  overflow:hidden;
+}
+
+.rail-media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, transparent 58%, rgba(0,0,0,.58));
+}
+
+.rail-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.rail-badge{
+  position:absolute;
+  top:1rem;
+  left:0;
+  z-index:1;
+  padding:.3rem .75rem .3rem .6rem;
+  border-radius:0 999px 999px 0;
+  font-family:var(--font-head);
+  font-size:.72rem;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#fff;
+  background:linear-gradient(135deg, var(--fire), var(--fire2));
+}
+
+.rail-badge.green{
+  color:#000;
+  background:linear-gradient(135deg, var(--acid), #EAFB96);
+}
+
+.rail-badge.gold{
+  color:#000;
+  background:linear-gradient(135deg, var(--gold), #F7D570);
+}
+
+.rail-body{
+  padding:1.05rem 1.05rem 1.15rem;
+}
+
+.rail-meta-line{
+  margin-bottom:.45rem;
+  font-family:var(--font-mono);
+  font-size:.58rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--sub);
+}
+
+.rail-name{
+  margin:0 0 .85rem;
+  font-family:var(--font-head);
+  font-size:1.18rem;
+  font-weight:900;
+  line-height:1.08;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.rail-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.35rem;
+  margin-bottom:1rem;
+}
+
+.rail-tag{
+  display:inline-flex;
+  align-items:center;
+  padding:.34rem .55rem;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:999px;
+  background:rgba(255,255,255,.02);
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:.56rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.rail-footer{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:.8rem;
+}
+
+.rail-price{
+  font-family:var(--font-head);
+  font-size:1.95rem;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.02em;
+}
+
+.rail-price small{
+  display:block;
+  margin-top:.15rem;
+  font-family:var(--font-mono);
+  font-size:.58rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--sub);
+}
+
+.rail-actions{
+  display:flex;
+  flex-direction:column;
+  gap:.45rem;
+  align-items:stretch;
+}
+
+.rail-actions .small-btn{
+  min-width:132px;
+}
+
+.rail-progress{
+  height:2px;
+  margin:0 1rem 1rem;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,.06);
+}
+
+.rail-progress span{
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg, var(--acid), rgba(200,245,66,.22));
+  transition:width .15s linear;
+}
+
+.rail-nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:3;
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:999px;
+  background:rgba(9,12,16,.7);
+  color:var(--text);
+  backdrop-filter:blur(16px) saturate(150%);
+  cursor:pointer;
+  transition:transform .18s ease, background .18s ease, border-color .18s ease, opacity .18s ease;
+}
+
+.rail-nav:hover{
+  transform:translateY(-50%) scale(1.04);
+  border-color:rgba(200,245,66,.24);
+  background:rgba(200,245,66,.08);
+}
+
+.rail-nav:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+.rail-nav.prev{left:.65rem}
+.rail-nav.next{right:.65rem}
+
+.rail-nav svg{
+  width:18px;
+  height:18px;
+  fill:currentColor;
+}
+
+.rail-load{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:.15rem;
+}
+
+.rail-load .rail-more{
+  min-height:44px;
+  border-radius:999px;
+  padding:.75rem 1rem;
+}
+
+.rail-sentinel{
+  flex:none;
+  width:1px;
+  height:1px;
+}
+
+.rail-skeleton{
+  position:relative;
+  overflow:hidden;
+}
+
+.rail-skeleton::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+  animation:skeletonShimmer 1.1s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer{
+  100%{transform:translateX(100%)}
+}
+
+.rail-skel-media{
+  min-height:220px;
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.03));
+}
+
+.rail-skel-body{
+  padding:1.05rem;
+}
+
+.rail-skel-line{
+  height:12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.05);
+  margin-bottom:.55rem;
+}
+
+.rail-skel-line.wide{width:78%}
+.rail-skel-line.mid{width:58%}
+.rail-skel-line.short{width:38%}
+.rail-skel-stack{display:grid;gap:.45rem}
+
+.back-top{
+  position:fixed;
+  right:1rem;
+  bottom:1rem;
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  z-index:970;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  color:var(--text);
+  backdrop-filter:blur(16px) saturate(150%);
+  box-shadow:var(--shadow2);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(12px) scale(.95);
+  transition:opacity .2s ease, transform .2s ease, visibility .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.back-top.show{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0) scale(1);
+}
+
+.back-top:hover{
+  border-color:rgba(200,245,66,.26);
+  background:rgba(200,245,66,.08);
+}
+
+/* Responsive overrides for the hybrid rails */
+@media(max-width:1200px){
+  .rail-card{
+    flex-basis:clamp(240px, 38vw, 330px);
+  }
+}
+
+@media(max-width:920px){
+  .products-layout{
+    grid-template-columns:1fr;
+    gap:1rem;
+  }
+
+  .products-main{
+    min-width:0;
+  }
+
+  .sidebar{
+    position:sticky;
+    top:78px;
+    z-index:610;
+    width:100%;
+    max-width:none;
+    padding:1rem;
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:22px;
+    background:rgba(8,10,14,.78);
+    backdrop-filter:blur(18px) saturate(150%);
+    box-shadow:var(--shadow2);
+  }
+
+  .quick-card{
+    display:none;
+  }
+
+  .filter-list{
+    display:flex;
+    gap:.55rem;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding-bottom:.2rem;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .filter-list::-webkit-scrollbar{
+    display:none;
+  }
+
+  .filter-btn{
+    flex:none;
+    white-space:nowrap;
+  }
+
+  .main-toolbar{
+    position:sticky;
+    top:162px;
+    z-index:600;
+    padding:.85rem 0 1rem;
+    background:linear-gradient(180deg, rgba(8,10,14,.95), rgba(8,10,14,.78));
+    backdrop-filter:blur(14px) saturate(150%);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+
+  .rail-viewport{
+    padding-inline:1rem;
+  }
+
+  .rail-shell::before,
+  .rail-shell::after{
+    width:32px;
+  }
+
+  .rail-nav{
+    display:none;
+  }
+
+  .rail-card{
+    flex-basis:clamp(230px, 74vw, 320px);
+  }
+}
+
+@media(max-width:680px){
+  .rail-head{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .rail-footer{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .rail-actions .small-btn{
+    min-width:0;
+    width:100%;
+  }
+
+  .rail-load{
+    justify-content:stretch;
+  }
+
+  .rail-load .rail-more{
+    width:100%;
+  }
+
+  .back-top{
+    right:.85rem;
+    bottom:.85rem;
+    width:48px;
+    height:48px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -923,26 +2208,6 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
         <div class="logo-sub">Est. 2014 · Kottarakkara, Kerala</div>
       </div>
     </a>
-    <div class="nav-ticker" aria-hidden="true">
-      <div class="ticker">
-        <span class="ticker-item"><span class="dot">●</span>Cricket</span>
-        <span class="ticker-item"><span class="dot">●</span>Football</span>
-        <span class="ticker-item"><span class="dot">●</span>Badminton</span>
-        <span class="ticker-item"><span class="dot">●</span>Basketball</span>
-        <span class="ticker-item"><span class="dot">●</span>Chess</span>
-        <span class="ticker-item"><span class="dot">●</span>Fitness</span>
-        <span class="ticker-item"><span class="dot">●</span>Swimming</span>
-        <span class="ticker-item"><span class="dot">●</span>Sportswear</span>
-        <span class="ticker-item"><span class="dot">●</span>Cricket</span>
-        <span class="ticker-item"><span class="dot">●</span>Football</span>
-        <span class="ticker-item"><span class="dot">●</span>Badminton</span>
-        <span class="ticker-item"><span class="dot">●</span>Basketball</span>
-        <span class="ticker-item"><span class="dot">●</span>Chess</span>
-        <span class="ticker-item"><span class="dot">●</span>Fitness</span>
-        <span class="ticker-item"><span class="dot">●</span>Swimming</span>
-        <span class="ticker-item"><span class="dot">●</span>Sportswear</span>
-      </div>
-    </div>
     <ul class="nav-links">
       <li><a href="#shop">Shop</a></li>
       <li><a href="#about">About</a></li>
@@ -1053,95 +2318,16 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
   </div>
 </div>
 
-<section class="cat-section" id="shop">
-  <div class="section-head container">
-    <div data-scroll="fade-left">
-      <div class="sh-eyebrow">// Browse by sport</div>
-      <h2 class="sh-title">Shop<br><span class="alt">Categories</span></h2>
-    </div>
-    <div data-scroll="fade-right" style="text-align:right">
-      <div class="sh-count">08 SPORTS AVAILABLE</div>
-      <div class="sh-count" style="margin-top:.45rem">Dynamic cart · working filters · mobile ready</div>
-    </div>
-  </div>
-  <div class="cat-grid container" id="categoryGrid">
-    <div class="cat-item large" data-cat="Cricket" data-scroll="zoom-in">
-      <div class="cat-num">01 / 08</div>
-      <div>
-        <div class="cat-emoji">🏏</div>
-        <h3 class="cat-title">Cricket</h3>
-        <p class="cat-sub">Bats · Pads · Gloves · Balls · Helmets · Kits</p>
-      </div>
-      <div class="cat-arrow-btn">View Cricket products ↗</div>
-      <div class="cat-accent-line"></div>
-    </div>
-    <div class="cat-item" data-cat="Football" data-scroll="flip-up" data-delay="1">
-      <div class="cat-num">02 / 08</div>
-      <div class="cat-emoji">⚽</div>
-      <h3 class="cat-title">Football</h3>
-      <p class="cat-sub">Balls · Boots · Jerseys</p>
-      <div class="cat-arrow-btn">View ↗</div>
-      <div class="cat-accent-line"></div>
-    </div>
-    <div class="cat-item" data-cat="Badminton" data-scroll="flip-up" data-delay="2">
-      <div class="cat-num">03 / 08</div>
-      <div class="cat-emoji">🏸</div>
-      <h3 class="cat-title">Badminton</h3>
-      <p class="cat-sub">Rackets · Shuttles · Bags</p>
-      <div class="cat-arrow-btn">View ↗</div>
-      <div class="cat-accent-line"></div>
-    </div>
-    <div class="cat-item" data-cat="Fitness" data-scroll="flip-up" data-delay="1">
-      <div class="cat-num">04 / 08</div>
-      <div class="cat-emoji">🏋️</div>
-      <h3 class="cat-title">Fitness</h3>
-      <p class="cat-sub">Weights · Bands · Mats</p>
-      <div class="cat-arrow-btn">View ↗</div>
-      <div class="cat-accent-line"></div>
-    </div>
-    <div class="cat-item" data-cat="Basketball" data-scroll="flip-up" data-delay="2">
-      <div class="cat-num">05 / 08</div>
-      <div class="cat-emoji">🏀</div>
-      <h3 class="cat-title">Basketball</h3>
-      <p class="cat-sub">Balls · Shoes · Hoops</p>
-      <div class="cat-arrow-btn">View ↗</div>
-      <div class="cat-accent-line"></div>
-    </div>
-    <div class="cat-item" data-cat="Chess" data-scroll="flip-up" data-delay="3">
-      <div class="cat-num">06 / 08</div>
-      <div class="cat-emoji">♟️</div>
-      <h3 class="cat-title">Chess</h3>
-      <p class="cat-sub">Boards · Pieces · Clocks</p>
-      <div class="cat-arrow-btn">View ↗</div>
-      <div class="cat-accent-line"></div>
-    </div>
-    <div class="cat-item" data-cat="Sportswear" data-scroll="flip-up" data-delay="4">
-      <div class="cat-num">07 / 08</div>
-      <div class="cat-emoji">👕</div>
-      <h3 class="cat-title">Sportswear</h3>
-      <p class="cat-sub">Jerseys · Tracksuits · Shorts</p>
-      <div class="cat-arrow-btn">View ↗</div>
-      <div class="cat-accent-line"></div>
-    </div>
-    <div class="cat-item" data-cat="Swimming" data-scroll="flip-up" data-delay="5">
-      <div class="cat-num">08 / 08</div>
-      <div class="cat-emoji">🏊</div>
-      <h3 class="cat-title">Swimming</h3>
-      <p class="cat-sub">Swimwear · Goggles · Caps</p>
-      <div class="cat-arrow-btn">View ↗</div>
-      <div class="cat-accent-line"></div>
-    </div>
-  </div>
-</section>
+
 
 <section class="products-section" id="products">
   <div class="section-head container">
     <div data-scroll="fade-left">
-      <div class="sh-eyebrow">// Bestsellers</div>
-      <h2 class="sh-title">Popular<br><span class="alt">Right Now</span></h2>
+      <div class="sh-eyebrow">// Hybrid browsing system</div>
+      <h2 class="sh-title">Premium Product<br><span class="alt">Rails</span></h2>
     </div>
     <div data-scroll="fade-right" style="text-align:right">
-      <div class="sh-count">FULL CATALOGUE WITH REAL FILTERING</div>
+      <div class="sh-count">VERTICAL FLOW • HORIZONTAL RAILS • REAL FILTERING</div>
     </div>
   </div>
 
@@ -1165,7 +2351,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
       </div>
     </aside>
 
-    <main>
+    <main class="products-main">
       <div class="main-toolbar" data-scroll="fade-up">
         <div class="toolbar-left">
           <div class="toolbar-count" id="resultsCount">0 products</div>
@@ -1189,7 +2375,12 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
           </div>
         </div>
       </div>
-      <div class="products-grid" id="productsGrid"></div>
+
+      <div class="rail-legend" data-scroll="fade-up">
+        Drag horizontally on desktop, swipe on mobile, or use the arrow controls at each rail edge.
+      </div>
+
+      <div class="rail-stack" id="productsGrid" aria-live="polite"></div>
     </main>
   </div>
 </section>
@@ -1475,6 +2666,8 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
   </div>
 </aside>
 
+<button type="button" class="back-top" id="backToTopBtn" aria-label="Back to top">↑</button>
+
 <div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 
 <script>
@@ -1554,6 +2747,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
     mobilePanel: document.getElementById('mobilePanel'),
     toastWrap: document.getElementById('toastWrap'),
     sidebarHint: document.getElementById('sidebarHint'),
+    backToTopBtn: document.getElementById('backToTopBtn'),
   };
 
   /* ============================================================
@@ -1684,47 +2878,361 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
     els.sidebarHint.textContent = state.sport==='All Sports' ? 'All sports' : state.sport;
   }
 
-  function renderProductList(list){
-    if (!list.length){
-      els.productsGrid.innerHTML = `<div class="empty-state"><div style="font-size:2.8rem;margin-bottom:.4rem">🔎</div><h3>No products match</h3><p>Try clearing the filter or changing the search term.</p></div>`;
-      return;
+  /* ============================================================
+     HYBRID PRODUCT RAIL ENGINE
+     Major change: the old product grid now renders curated
+     horizontal rails with drag, wheel-to-horizontal, arrows,
+     scroll snap, and batch loading.
+  ============================================================ */
+  const RAIL_BATCH_SIZE = 6;
+  const RAIL_DEFS = [
+    {
+      key: 'trending',
+      eyebrow: '// Trending',
+      title: 'Trending',
+      subtitle: 'Most in-demand gear right now.',
+      sort: (a, b) => b.popular - a.popular || a.featured - b.featured
+    },
+    {
+      key: 'new-arrivals',
+      eyebrow: '// New arrivals',
+      title: 'New Arrivals',
+      subtitle: 'Fresh drops and recently stocked items.',
+      sort: (a, b) => b.year - a.year || a.featured - b.featured
+    },
+    {
+      key: 'football',
+      eyebrow: '// Match day',
+      title: 'Football',
+      subtitle: 'Boots, balls, and pitch-ready essentials.',
+      match: p => p.sport === 'Football',
+      sort: (a, b) => b.popular - a.popular || a.featured - b.featured
+    },
+    {
+      key: 'cricket',
+      eyebrow: '// Boundary line',
+      title: 'Cricket',
+      subtitle: 'Bats, pads, protection, and match gear.',
+      match: p => p.sport === 'Cricket',
+      sort: (a, b) => b.popular - a.popular || a.featured - b.featured
+    },
+    {
+      key: 'gym',
+      eyebrow: '// Training deck',
+      title: 'Gym',
+      subtitle: 'Fitness and warmup gear for repeat sessions.',
+      match: p => p.sport === 'Fitness' || p.sport === 'Sportswear',
+      sort: (a, b) => b.popular - a.popular || a.featured - b.featured
+    },
+    {
+      key: 'best-sellers',
+      eyebrow: '// Best sellers',
+      title: 'Best Sellers',
+      subtitle: 'The strongest performers in the catalog.',
+      sort: (a, b) => b.popular - a.popular || b.year - a.year
     }
-    els.productsGrid.innerHTML = list.map((p, i) => `
-      <article class="product-card" data-scroll="fade-up" data-delay="${Math.min((i%3)+1,6)}">
-        <div class="product-media">
-          <div class="product-badge ${p.badgeTone||''}">${p.badge}</div>
-          <div>${p.emoji}</div>
+  ];
+
+  const railState = new Map();
+  let railSeq = 0;
+  let railReady = false;
+  const supportD2H = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  function escapeHTML(value){
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
+  function buildRailSections(list){
+    return RAIL_DEFS.map(def => {
+      const items = list
+        .filter(def.match ? def.match : () => true)
+        .slice()
+        .sort(def.sort || ((a, b) => a.featured - b.featured));
+
+      return { ...def, items };
+    }).filter(section => section.items.length);
+  }
+
+  function productCardHTML(p, idx = 0){
+    const tone = p.badgeTone || '';
+    const priceLine = p.oldPrice ? `was ${formatINR.format(p.oldPrice)}` : 'direct price';
+    const tags = [p.sport, p.category, ...(p.tags || []).slice(0, 2)]
+      .filter(Boolean)
+      .slice(0, 4)
+      .map(tag => `<span class="rail-tag">${escapeHTML(tag)}</span>`)
+      .join('');
+
+    const media = p.image
+      ? `<img src="${escapeHTML(p.image)}" alt="${escapeHTML(p.name)}" loading="lazy" decoding="async" />`
+      : `<div aria-hidden="true">${escapeHTML(p.emoji || '🏆')}</div>`;
+
+    return `
+      <article class="rail-card" data-scroll="fade-up" data-delay="${(idx % 6) + 1}">
+        <div class="rail-media">
+          <div class="rail-badge ${tone}">${escapeHTML(p.badge || 'Featured')}</div>
+          ${media}
         </div>
-        <div class="product-body">
-          <div class="product-meta">${p.brand}</div>
-          <h3 class="product-name">${p.name}</h3>
-          <div class="product-tags">
-            <span class="tag">${p.sport}</span>
-            <span class="tag">${p.category}</span>
-            ${p.tags.slice(0,2).map(t=>`<span class="tag">${t}</span>`).join('')}
-          </div>
-          <div class="product-footer">
+        <div class="rail-body">
+          <div class="rail-meta-line">${escapeHTML(p.brand || '')}</div>
+          <h3 class="rail-name">${escapeHTML(p.name)}</h3>
+          <div class="rail-tags">${tags}</div>
+          <div class="rail-footer">
             <div>
-              <div class="price">${formatINR.format(p.price)}<small>${p.oldPrice?`was ${formatINR.format(p.oldPrice)}`:'direct price'}</small></div>
+              <div class="rail-price">${formatINR.format(p.price)}<small>${escapeHTML(priceLine)}</small></div>
             </div>
-            <div class="product-actions">
-              <button type="button" class="small-btn cart" data-add-cart="${p.id}">
-                <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM6.2 6l.6 3h10.9c.4 0 .7.2.9.5l1.7 3.4c.3.6-.1 1.1-.7 1.1H8.1l-.3 1.6c-.1.5-.6.8-1.1.8H5c-.6 0-1-.4-1-1s.4-1 1-1h1.1l1.2-6H4.2c-.5 0-1-.4-1-1s.4-1 1-1h2z"/></svg>
+            <div class="rail-actions">
+              <button type="button" class="small-btn cart" data-add-cart="${escapeHTML(p.id)}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM6.2 6l.6 3h10.9c.4 0 .7.2.9.5l1.7 3.4c.3.6-.1 1.1-.7 1.1H8.1l-.3 1.6c-.1.5-.6.8-1.1.8H5c-.6 0-1-.4-1-1s.4-1 1-1h1.1l1.2-6H4.2c-.5 0-1-.4-1-1s.4-1 1-1h2z"/></svg>
                 Add
               </button>
-              <button type="button" class="small-btn enquire" data-enquire-product="${p.id}">
-                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+              <button type="button" class="small-btn enquire" data-enquire-product="${escapeHTML(p.id)}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
                 Enquire
               </button>
             </div>
           </div>
         </div>
-      </article>
-    `).join('');
-    observeScrollEls(els.productsGrid);
+      </article>`;
+  }
+
+  function railSkeletonCard(){
+    return `
+      <article class="rail-card rail-skeleton" aria-hidden="true">
+        <div class="rail-media rail-skel-media"></div>
+        <div class="rail-skel-body">
+          <div class="rail-skel-line wide"></div>
+          <div class="rail-skel-line mid"></div>
+          <div class="rail-skel-stack">
+            <div class="rail-skel-line short"></div>
+            <div class="rail-skel-line mid"></div>
+            <div class="rail-skel-line short"></div>
+          </div>
+        </div>
+      </article>`;
+  }
+
+  function railSkeletonHTML(){
+    return `
+      <section class="product-rail">
+        <div class="rail-head">
+          <div>
+            <div class="rail-eyebrow">// Loading</div>
+            <h3 class="rail-title">Building rails</h3>
+            <p class="rail-sub">Rendering premium product sections...</p>
+          </div>
+          <div class="rail-meta">Loading</div>
+        </div>
+        <div class="rail-shell">
+          <div class="rail-viewport">
+            <div class="rail-track">
+              ${railSkeletonCard()}
+              ${railSkeletonCard()}
+              ${railSkeletonCard()}
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function railSectionHTML(section){
+    const initialItems = section.items.slice(0, RAIL_BATCH_SIZE);
+
+    return `
+      <section class="product-rail" data-rail-section="${escapeHTML(section.key)}" data-scroll="fade-up">
+        <div class="rail-head">
+          <div>
+            <div class="rail-eyebrow">${escapeHTML(section.eyebrow)}</div>
+            <h3 class="rail-title">${escapeHTML(section.title)}</h3>
+            <p class="rail-sub">${escapeHTML(section.subtitle)}</p>
+          </div>
+          <div class="rail-meta">${section.items.length} picks</div>
+        </div>
+
+        <div class="rail-shell">
+          <button type="button" class="rail-nav prev" data-rail-nav="prev" data-rail-target="${escapeHTML(section.key)}" aria-label="Scroll ${escapeHTML(section.title)} left">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.4 4.6L9 11l6.4 6.4-1.4 1.4L6.2 11l7.8-7.8z"/></svg>
+          </button>
+
+          <div class="rail-viewport" tabindex="0" data-rail-viewport="${escapeHTML(section.key)}" aria-label="${escapeHTML(section.title)} products">
+            <div class="rail-track" data-rail-track="${escapeHTML(section.key)}">
+              ${initialItems.map((p, i) => productCardHTML(p, i)).join('')}
+              <span class="rail-sentinel" data-rail-sentinel="${escapeHTML(section.key)}"></span>
+            </div>
+          </div>
+
+          <button type="button" class="rail-nav next" data-rail-nav="next" data-rail-target="${escapeHTML(section.key)}" aria-label="Scroll ${escapeHTML(section.title)} right">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 19.4L15 13l-6.4-6.4 1.4-1.4 7.8 7.8-7.8 7.8z"/></svg>
+          </button>
+        </div>
+
+        <div class="rail-progress" aria-hidden="true"><span data-rail-progress="${escapeHTML(section.key)}"></span></div>
+
+        <div class="rail-load">
+          <button type="button" class="btn btn-secondary rail-more" data-rail-more="${escapeHTML(section.key)}" ${section.items.length <= initialItems.length ? 'hidden' : ''}>Load more</button>
+        </div>
+      </section>`;
+  }
+
+  function updateRailChrome(sectionEl){
+    if (!sectionEl) return;
+    const viewport = sectionEl.querySelector('[data-rail-viewport]');
+    const progress = sectionEl.querySelector('[data-rail-progress]');
+    const prev = sectionEl.querySelector('[data-rail-nav="prev"]');
+    const next = sectionEl.querySelector('[data-rail-nav="next"]');
+    if (!viewport) return;
+
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const ratio = max <= 0 ? 0 : viewport.scrollLeft / max;
+    if (progress) progress.style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
+    if (prev) prev.disabled = viewport.scrollLeft <= 4;
+    if (next) next.disabled = viewport.scrollLeft >= max - 4;
+  }
+
+  function scrollRail(sectionEl, dir){
+    const viewport = sectionEl?.querySelector('[data-rail-viewport]');
+    if (!viewport) return;
+    const distance = Math.max(320, Math.round(viewport.clientWidth * 0.72));
+    viewport.scrollBy({ left: dir * distance, behavior: 'smooth' });
+  }
+
+  function setupRailViewport(sectionEl, key){
+    const viewport = sectionEl.querySelector('[data-rail-viewport]');
+    if (!viewport) return;
+
+    const onScroll = () => requestAnimationFrame(() => updateRailChrome(sectionEl));
+    viewport.addEventListener('scroll', onScroll, { passive: true });
+
+    viewport.addEventListener('wheel', (e) => {
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      const max = viewport.scrollWidth - viewport.clientWidth;
+      if (max <= 0) return;
+      const next = viewport.scrollLeft + delta;
+      if (next <= 0 || next >= max - 1) return;
+      e.preventDefault();
+      viewport.scrollLeft = next;
+    }, { passive: false });
+
+    let dragging = false;
+    let startX = 0;
+    let startScroll = 0;
+
+    viewport.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      if (e.target.closest('button,a,input,select,textarea,label')) return;
+      dragging = true;
+      startX = e.clientX;
+      startScroll = viewport.scrollLeft;
+      viewport.classList.add('dragging');
+      viewport.setPointerCapture?.(e.pointerId);
+    });
+
+    const stopDragging = () => {
+      dragging = false;
+      viewport.classList.remove('dragging');
+    };
+
+    viewport.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      viewport.scrollLeft = startScroll - (e.clientX - startX);
+    });
+
+    viewport.addEventListener('pointerup', stopDragging);
+    viewport.addEventListener('pointercancel', stopDragging);
+    viewport.addEventListener('lostpointercapture', stopDragging);
+
+    viewport.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); scrollRail(sectionEl, 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); scrollRail(sectionEl, -1); }
+    });
+
+    const sentinel = sectionEl.querySelector(`[data-rail-sentinel="${CSS.escape(key)}"]`);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        loadMoreRail(key);
+      });
+    }, { root: viewport, rootMargin: '0px 120px 0px 0px', threshold: 0.12 });
+
+    if (sentinel) observer.observe(sentinel);
+    railState.set(key, { ...(railState.get(key) || {}), observer });
+    updateRailChrome(sectionEl);
+  }
+
+  function mountRail(section){
+    const sectionEl = els.productsGrid.querySelector(`[data-rail-section="${CSS.escape(section.key)}"]`);
+    if (!sectionEl) return;
+    setupRailViewport(sectionEl, section.key);
+  }
+
+  function loadMoreRail(key){
+    const entry = railState.get(key);
+    if (!entry || entry.loaded >= entry.items.length) return;
+
+    const sectionEl = entry.sectionEl;
+    const track = sectionEl?.querySelector('[data-rail-track]');
+    const sentinel = sectionEl?.querySelector('[data-rail-sentinel]');
+    const moreBtn = sectionEl?.querySelector('[data-rail-more]');
+    if (!track || !sentinel) return;
+
+    const nextChunk = entry.items.slice(entry.loaded, entry.loaded + RAIL_BATCH_SIZE);
+    if (!nextChunk.length) {
+      if (moreBtn) moreBtn.hidden = true;
+      return;
+    }
+
+    sentinel.insertAdjacentHTML('beforebegin', nextChunk.map((p, i) => productCardHTML(p, entry.loaded + i)).join(''));
+    entry.loaded += nextChunk.length;
+    if (moreBtn) moreBtn.hidden = entry.loaded >= entry.items.length;
+    updateRailChrome(sectionEl);
+    observeScrollEls(track);
+  }
+
+  function renderProductList(list){
+    railSeq += 1;
+    const seq = railSeq;
+    const sections = buildRailSections(list);
+
+    railState.forEach(state => state?.observer?.disconnect?.());
+    railState.clear();
+
+    if (!sections.length){
+      els.productsGrid.innerHTML = `<div class="empty-state" data-scroll="fade-up"><div style="font-size:2.8rem;margin-bottom:.4rem">🔎</div><h3>No products match</h3><p>Try clearing the filter, switching sport rails, or refining the search term.</p></div>`;
+      return;
+    }
+
+    els.productsGrid.innerHTML = railReady ? sections.map(railSectionHTML).join('') : sections.map(() => railSkeletonHTML()).join('');
+
+    const commit = () => {
+      if (seq !== railSeq) return;
+      els.productsGrid.innerHTML = sections.map(railSectionHTML).join('');
+
+      sections.forEach(section => {
+        const sectionEl = els.productsGrid.querySelector(`[data-rail-section="${CSS.escape(section.key)}"]`);
+        railState.set(section.key, {
+          items: section.items,
+          loaded: Math.min(RAIL_BATCH_SIZE, section.items.length),
+          sectionEl,
+          observer: null
+        });
+        mountRail(section);
+      });
+
+      observeScrollEls(els.productsGrid);
+      railReady = true;
+      syncBackToTop();
+    };
+
+    if (!railReady) requestAnimationFrame(commit);
+    else commit();
   }
 
   function clearFilters(){
+
     state.sport = 'All Sports'; state.query = ''; state.sort = 'featured';
     els.searchInput.value = ''; els.sortSelect.value = 'featured';
     buildFilters(); syncActiveFilters(); applyFilters();
@@ -1734,6 +3242,20 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
      EVENTS
   ============================================================ */
   document.addEventListener('click', e => {
+    const railNav = e.target.closest('[data-rail-nav]');
+    if (railNav){
+      const sectionEl = railNav.closest('[data-rail-section]');
+      if (!sectionEl) return;
+      scrollRail(sectionEl, railNav.dataset.railNav === 'next' ? 1 : -1);
+      return;
+    }
+
+    const railMore = e.target.closest('[data-rail-more]');
+    if (railMore){
+      loadMoreRail(railMore.dataset.railMore);
+      return;
+    }
+
     const sportBtn = e.target.closest('[data-sport]');
     if (sportBtn){ state.sport = sportBtn.dataset.sport; buildFilters(); syncActiveFilters(); applyFilters(); return; }
 
@@ -1797,6 +3319,12 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
   document.querySelectorAll('.mobile-links a').forEach(link => link.addEventListener('click', closeMobileMenu));
   els.cartEnquireBtn.addEventListener('click', e => { const url = cartWA(); if(url==='#') e.preventDefault(); else e.currentTarget.href=url; });
 
+  if (els.backToTopBtn) {
+    els.backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
   /* ============================================================
      CURSOR
   ============================================================ */
@@ -1827,7 +3355,15 @@ footer{border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.0
   const navShell = document.querySelector('.nav-shell');
   window.addEventListener('scroll', () => {
     navShell.style.boxShadow = window.scrollY > 20 ? '0 12px 40px rgba(0,0,0,.2)' : 'none';
+    if (els.backToTopBtn) {
+      els.backToTopBtn.classList.toggle('show', window.scrollY > Math.max(720, innerHeight * 0.65));
+    }
   }, { passive:true });
+
+  function syncBackToTop(){
+    if (!els.backToTopBtn) return;
+    els.backToTopBtn.classList.toggle('show', window.scrollY > Math.max(720, innerHeight * 0.65));
+  }
 
   /* ============================================================
      INIT
