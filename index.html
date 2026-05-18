@@ -2274,6 +2274,159 @@ footer{
   }
 }
 
+
+/* ===== FINAL HYBRID RAIL FIX ===== */
+.products-main,
+.sidebar,
+.main-toolbar{
+  min-width:0;
+}
+
+.rail-stack{
+  min-width:0;
+}
+
+.product-rail{
+  min-width:0;
+}
+
+.rail-shell{
+  isolation:isolate;
+}
+
+.rail-viewport{
+  scroll-padding-inline:1rem;
+  scrollbar-gutter:stable;
+}
+
+.rail-track{
+  min-width:0;
+}
+
+.rail-card{
+  flex:0 0 clamp(280px, 24vw, 360px);
+  min-width:clamp(280px, 24vw, 360px);
+}
+
+.rail-media{
+  min-height:240px;
+}
+
+.rail-footer{
+  gap:1rem;
+}
+
+.rail-actions .small-btn{
+  min-width:132px;
+}
+
+@media(max-width:1200px){
+  .rail-card{
+    flex-basis:clamp(260px, 34vw, 340px);
+    min-width:clamp(260px, 34vw, 340px);
+  }
+}
+
+@media(max-width:920px){
+  .sidebar{
+    position:static;
+    top:auto;
+  }
+
+  .main-toolbar{
+    position:static;
+    top:auto;
+    margin-top:.25rem;
+    padding:.75rem 0 0;
+    background:transparent;
+    backdrop-filter:none;
+    border-bottom:none;
+  }
+
+  .toolbar-left,
+  .toolbar-right{
+    width:100%;
+  }
+
+  .rail-legend{
+    margin-top:.25rem;
+  }
+
+  .rail-shell::before,
+  .rail-shell::after{
+    width:24px;
+  }
+
+  .rail-nav{
+    display:none;
+  }
+
+  .rail-viewport{
+    padding:.9rem .8rem 1rem;
+    gap:.9rem;
+    scroll-snap-type:x proximity;
+    touch-action:pan-x pan-y;
+  }
+
+  .rail-track{
+    gap:.9rem;
+  }
+
+  .rail-card{
+    flex-basis:clamp(255px, 80vw, 330px);
+    min-width:clamp(255px, 80vw, 330px);
+  }
+
+  .rail-media{
+    min-height:210px;
+  }
+
+  .rail-actions{
+    flex-direction:row;
+  }
+
+  .rail-actions .small-btn{
+    min-width:0;
+    width:100%;
+  }
+}
+
+@media(max-width:680px){
+  .rail-card{
+    flex-basis:84vw;
+    min-width:84vw;
+  }
+
+  .rail-media{
+    min-height:198px;
+  }
+
+  .rail-name{
+    font-size:1.08rem;
+  }
+
+  .rail-price{
+    font-size:1.72rem;
+  }
+
+  .rail-footer{
+    gap:.85rem;
+  }
+
+  .rail-actions{
+    flex-direction:column;
+  }
+
+  .rail-actions .small-btn{
+    width:100%;
+  }
+
+  .main-toolbar{
+    position:static;
+    padding:.65rem 0 0;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -3192,7 +3345,7 @@ footer{
   function scrollRail(sectionEl, dir){
     const viewport = sectionEl?.querySelector('[data-rail-viewport]');
     if (!viewport) return;
-    const distance = Math.max(320, Math.round(viewport.clientWidth * 0.72));
+    const distance = Math.min(Math.max(280, Math.round(viewport.clientWidth * 0.78)), 620);
     viewport.scrollBy({ left: dir * distance, behavior: 'smooth' });
   }
 
