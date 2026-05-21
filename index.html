@@ -476,7 +476,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease;
 }
 .rail-card:hover{transform:translateY(-4px);border-color:rgba(200,245,66,.26);box-shadow:0 26px 58px rgba(0,0,0,.26)}
-.rail-card{touch-action:pan-y pinch-zoom;user-select:none}
+.rail-card{touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-drag:none}
 
 /* Product image area */
 .rail-media{
@@ -597,10 +597,13 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   .rail-shell::before,.rail-shell::after{width:22px}
   .rail-nav{display:none}
   .rail-viewport{padding:.85rem .78rem .95rem;gap:.85rem;touch-action:pan-y pinch-zoom}
-  .rail-card{flex-basis:clamp(270px,86vw,340px);min-width:clamp(270px,86vw,340px)}
-  .rail-media{min-height:208px}
-  .rail-actions{flex-direction:row}
-  .rail-actions .small-btn{min-width:0;width:100%}
+  .rail-card{flex-basis:clamp(250px,82vw,320px);min-width:clamp(250px,82vw,320px)}
+  .rail-media{min-height:176px}
+  .rail-body{padding:.92rem .9rem .98rem}
+  .rail-tags{gap:.28rem}
+  .rail-tag{font-size:.52rem}
+  .rail-actions{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+  .rail-actions .small-btn{min-width:0;width:100%;padding:.62rem .7rem;font-size:.68rem}
   .steps{grid-template-columns:1fr}
   .reviews-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr 1fr}
@@ -614,12 +617,14 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   .section-head{align-items:flex-start;flex-direction:column}
   .rail-head{flex-direction:column;align-items:flex-start}
   .rail-footer{flex-direction:column;align-items:stretch}
-  .rail-actions{flex-direction:column}
-  .rail-actions .small-btn{width:100%;min-width:0}
-  .rail-card{flex-basis:clamp(250px,92vw,340px);min-width:clamp(250px,92vw,340px)}
-  .rail-media{min-height:192px}
-  .rail-name{font-size:1.06rem}
-  .rail-price{font-size:1.68rem}
+  .rail-actions{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+  .rail-actions .small-btn{width:100%;min-width:0;padding:.6rem .65rem;font-size:.66rem}
+  .rail-card{flex-basis:clamp(235px,90vw,320px);min-width:clamp(235px,90vw,320px)}
+  .rail-media{min-height:156px}
+  .rail-body{padding:.86rem .82rem .9rem}
+  .rail-name{font-size:.98rem}
+  .rail-price{font-size:1.48rem}
+  .rail-tags{gap:.24rem;margin-bottom:.8rem}
   .footer-grid{grid-template-columns:1fr}
   .footer-bottom{flex-direction:column;align-items:flex-start}
   .drawer-foot .actions{grid-template-columns:1fr}
@@ -654,13 +659,13 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   .hero-stats{grid-template-columns:1fr}
   .stat-value{font-size:2.55rem}
   .sh-title{font-size:clamp(2.2rem,11vw,3.4rem)}
-  .rail-card{flex-basis:calc(100vw - 1.2rem);min-width:calc(100vw - 1.2rem)}
-  .rail-media{min-height:180px}
-  .rail-body{padding:.9rem .85rem .95rem}
-  .rail-name{font-size:1rem}
-  .rail-price{font-size:1.55rem}
-  .rail-footer{gap:.65rem}
-  .small-btn{min-width:0;width:100%}
+  .rail-card{flex-basis:calc(100vw - 1rem);min-width:calc(100vw - 1rem)}
+  .rail-media{min-height:144px}
+  .rail-body{padding:.78rem .75rem .85rem}
+  .rail-name{font-size:.96rem;margin-bottom:.65rem}
+  .rail-price{font-size:1.42rem}
+  .rail-tags{gap:.22rem;margin-bottom:.72rem}
+  .small-btn{min-width:0;width:100%;padding:.58rem .65rem;font-size:.64rem}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -1355,13 +1360,24 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
     */
     vp.addEventListener('wheel', (e) => {
       const max = Math.max(0, vp.scrollWidth - vp.clientWidth);
-      if (max <= 0) return;
-
       const absDX = Math.abs(e.deltaX);
       const absDY = Math.abs(e.deltaY);
       const horizontalIntent = e.shiftKey || absDX > absDY;
 
-      if (!horizontalIntent) return;
+      // Always take over wheel events that land inside the rail.
+      // Vertical gestures are forwarded to the page so the cursor can sit
+      // on top of a product card without blocking page scroll.
+      e.preventDefault();
+
+      if (!horizontalIntent) {
+        window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
+        return;
+      }
+
+      if (max <= 0) {
+        window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
+        return;
+      }
 
       const delta = e.shiftKey && absDX === 0 ? e.deltaY : (absDX >= absDY ? e.deltaX : e.deltaY);
       if (!delta) return;
@@ -1369,7 +1385,6 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
       const next = Math.max(0, Math.min(max, vp.scrollLeft + delta));
       if (next === vp.scrollLeft) return;
 
-      e.preventDefault();
       vp.scrollLeft = next;
     }, {passive:false});
 
