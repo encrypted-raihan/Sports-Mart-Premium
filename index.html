@@ -422,7 +422,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   align-items:stretch;
   gap:1rem;
   overflow-x:auto;
-  overflow-y:visible;
+  overflow-y:hidden;
   padding:1rem 1.15rem 1.1rem;
 
   /* SOFT snap — cards drift into place without hard-locking */
@@ -437,13 +437,14 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   overscroll-behavior-x:contain;
 
   /* Allow both axes — browser gesture direction wins */
-  touch-action:pan-x pan-y;
+  touch-action:pan-y pinch-zoom;
 
   /* hide scrollbar cosmetically */
   scrollbar-width:none;
 
   /* drag cursor on desktop */
   cursor:grab;
+  -webkit-user-select:none;user-select:none;
 
   /* fade mask — cosmetic only, doesn't interfere with events */
   mask-image:linear-gradient(90deg,transparent 0,#000 56px,#000 calc(100% - 56px),transparent 100%);
@@ -454,7 +455,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   transform:translateZ(0);
 }
 .rail-viewport::-webkit-scrollbar{display:none}
-.rail-viewport.is-dragging{cursor:grabbing;scroll-behavior:auto;scroll-snap-type:none}
+.rail-viewport.is-dragging{cursor:grabbing;scroll-behavior:auto;scroll-snap-type:none;user-select:none;touch-action:pan-y pinch-zoom}
 
 .rail-track{display:flex;align-items:stretch;gap:1rem;min-width:0}
 
@@ -475,6 +476,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease;
 }
 .rail-card:hover{transform:translateY(-4px);border-color:rgba(200,245,66,.26);box-shadow:0 26px 58px rgba(0,0,0,.26)}
+.rail-card{touch-action:pan-y pinch-zoom;user-select:none}
 
 /* Product image area */
 .rail-media{
@@ -498,7 +500,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
 .rail-badge.green{color:#000;background:linear-gradient(135deg,var(--acid),#EAFB96)}
 .rail-badge.gold{color:#000;background:linear-gradient(135deg,var(--gold),#F7D570)}
 
-.rail-body{padding:1.05rem 1.05rem 1.15rem}
+.rail-body{padding:1.05rem 1.05rem 1.15rem;user-select:text}
 .rail-meta-line{margin-bottom:.45rem;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
 .rail-name{margin:0 0 .85rem;font-family:var(--font-head);font-size:1.18rem;font-weight:900;line-height:1.08;letter-spacing:.04em;text-transform:uppercase}
 .rail-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1rem}
@@ -506,7 +508,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
 .rail-footer{display:flex;align-items:flex-end;justify-content:space-between;gap:.8rem}
 .rail-price{font-family:var(--font-head);font-size:1.95rem;line-height:1;font-weight:900;letter-spacing:-.02em}
 .rail-price small{display:block;margin-top:.15rem;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
-.rail-actions{display:flex;flex-direction:column;gap:.45rem;align-items:stretch}
+.rail-actions{display:flex;flex-direction:column;gap:.45rem;align-items:stretch;user-select:none}
 .rail-actions .small-btn{min-width:132px}
 
 .small-btn{min-width:132px;border-radius:999px;padding:.72rem .9rem;border:1px solid rgba(255,255,255,.08);cursor:pointer;background:rgba(255,255,255,.02);color:var(--text);font-family:var(--font-head);font-size:.74rem;font-weight:900;letter-spacing:.11em;text-transform:uppercase;transition:transform .18s ease,background .18s ease,border-color .18s ease,color .18s ease;display:inline-flex;align-items:center;justify-content:center;gap:.45rem}
@@ -592,11 +594,11 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   .filter-btn{flex:none;white-space:nowrap}
   .main-toolbar{position:static;top:auto;padding:.75rem 0 0;background:transparent;backdrop-filter:none;border-bottom:none}
   .toolbar-left,.toolbar-right{width:100%}
-  .rail-shell::before,.rail-shell::after{width:24px}
+  .rail-shell::before,.rail-shell::after{width:22px}
   .rail-nav{display:none}
-  .rail-viewport{padding:.9rem .8rem 1rem;gap:.9rem;touch-action:pan-x pan-y}
-  .rail-card{flex-basis:clamp(255px,80vw,330px);min-width:clamp(255px,80vw,330px)}
-  .rail-media{min-height:210px}
+  .rail-viewport{padding:.85rem .78rem .95rem;gap:.85rem;touch-action:pan-y pinch-zoom}
+  .rail-card{flex-basis:clamp(270px,86vw,340px);min-width:clamp(270px,86vw,340px)}
+  .rail-media{min-height:208px}
   .rail-actions{flex-direction:row}
   .rail-actions .small-btn{min-width:0;width:100%}
   .steps{grid-template-columns:1fr}
@@ -614,16 +616,51 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   .rail-footer{flex-direction:column;align-items:stretch}
   .rail-actions{flex-direction:column}
   .rail-actions .small-btn{width:100%;min-width:0}
-  .rail-card{flex-basis:78vw;min-width:78vw}
-  .rail-media{min-height:198px}
-  .rail-name{font-size:1.08rem}
-  .rail-price{font-size:1.72rem}
+  .rail-card{flex-basis:clamp(250px,92vw,340px);min-width:clamp(250px,92vw,340px)}
+  .rail-media{min-height:192px}
+  .rail-name{font-size:1.06rem}
+  .rail-price{font-size:1.68rem}
   .footer-grid{grid-template-columns:1fr}
   .footer-bottom{flex-direction:column;align-items:flex-start}
   .drawer-foot .actions{grid-template-columns:1fr}
   .mobile-cta{grid-template-columns:1fr}
   section{padding-inline:1rem}
   .back-top{right:.85rem;bottom:.85rem;width:48px;height:48px}
+}
+
+@media(max-width:920px){
+  .rail-body{padding:1rem .95rem 1.05rem}
+  .rail-tags{gap:.32rem}
+  .rail-tag{font-size:.54rem}
+  .rail-card{flex-basis:clamp(260px,84vw,340px);min-width:clamp(260px,84vw,340px)}
+  .rail-media{min-height:200px}
+}
+@media(max-width:680px){
+  .rail-card{flex-basis:clamp(250px,86vw,330px);min-width:clamp(250px,86vw,330px)}
+  .rail-body{padding:.92rem .88rem .98rem}
+  .rail-tags{gap:.28rem}
+  .rail-tag{font-size:.52rem}
+  .rail-media{min-height:190px}
+  .rail-name{font-size:1rem}
+  .rail-price{font-size:1.6rem}
+}
+@media(max-width:480px){
+  .nav-shell{top:10px;width:calc(100% - 16px)}
+  .nav{height:68px}
+  .nav-logo{padding-inline:.85rem}
+  .nav-actions{padding-right:.55rem}
+  .hero-title{font-size:clamp(3.2rem,16vw,5.2rem)}
+  .hero-desc{font-size:.95rem;line-height:1.75}
+  .hero-stats{grid-template-columns:1fr}
+  .stat-value{font-size:2.55rem}
+  .sh-title{font-size:clamp(2.2rem,11vw,3.4rem)}
+  .rail-card{flex-basis:calc(100vw - 1.2rem);min-width:calc(100vw - 1.2rem)}
+  .rail-media{min-height:180px}
+  .rail-body{padding:.9rem .85rem .95rem}
+  .rail-name{font-size:1rem}
+  .rail-price{font-size:1.55rem}
+  .rail-footer{gap:.65rem}
+  .small-btn{min-width:0;width:100%}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -1312,41 +1349,41 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
     vp.addEventListener('scroll', () => requestAnimationFrame(()=>updateChrome(key)), {passive:true});
 
     /* ── WHEEL / TRACKPAD ──
-       Decide axis on each wheel event.
-       If deltaX is dominant: scroll horizontally inside the rail and consume.
-       If deltaY is dominant: don't preventDefault — let page scroll normally.
-       Also: if the viewport can scroll horizontally and user is scrolling
-       vertically, we still let the page scroll (no axis hijacking).
+       Horizontal rails should respond to both horizontal trackpad gestures
+       and vertical wheel gestures while the pointer is over the rail.
+       We only let the page keep scrolling when the rail can no longer move.
     */
     vp.addEventListener('wheel', (e) => {
+      const max = Math.max(0, vp.scrollWidth - vp.clientWidth);
+      if (max <= 0) return;
+
       const absDX = Math.abs(e.deltaX);
       const absDY = Math.abs(e.deltaY);
-      const isHorizontalGesture = absDX > absDY;
+      const horizontalIntent = e.shiftKey || absDX > absDY;
 
-      if (isHorizontalGesture) {
-        /* Purely horizontal gesture — consume it */
-        const max = vp.scrollWidth - vp.clientWidth;
-        if (max <= 0) return;
-        const next = vp.scrollLeft + e.deltaX;
-        /* Only prevent default if we can actually scroll in that direction */
-        if ((e.deltaX < 0 && vp.scrollLeft > 0) || (e.deltaX > 0 && vp.scrollLeft < max - 1)) {
-          e.preventDefault();
-          vp.scrollLeft += e.deltaX;
-        }
-      }
-      /* Vertical gesture → don't touch it; page scrolls normally */
+      if (!horizontalIntent) return;
+
+      const delta = e.shiftKey && absDX === 0 ? e.deltaY : (absDX >= absDY ? e.deltaX : e.deltaY);
+      if (!delta) return;
+
+      const next = Math.max(0, Math.min(max, vp.scrollLeft + delta));
+      if (next === vp.scrollLeft) return;
+
+      e.preventDefault();
+      vp.scrollLeft = next;
     }, {passive:false});
 
-    /* ── POINTER DRAG (desktop) ──
-       Track pointer movement and derive axis on first move.
-       Only claim pointer capture if gesture is clearly horizontal.
+    /* ── POINTER DRAG (desktop + touch) ──
+       Drag anywhere on the rail except interactive controls.
+       On touch, we own the horizontal gesture; vertical page scroll remains native.
     */
     let dragState = null;
 
     vp.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0) return;
-      if (e.target.closest('button,a,input,select,textarea,label')) return;
+      if (e.button !== 0 && e.pointerType !== 'touch') return;
+      if (e.target.closest('button,a,input,select,textarea,label,[contenteditable="true"]')) return;
       dragState = {
+        pointerId: e.pointerId,
         startX: e.clientX,
         startY: e.clientY,
         startScroll: vp.scrollLeft,
@@ -1356,7 +1393,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
     });
 
     window.addEventListener('pointermove', (e) => {
-      if (!dragState?.active) return;
+      if (!dragState?.active || e.pointerId !== dragState.pointerId) return;
       const dx = e.clientX - dragState.startX;
       const dy = e.clientY - dragState.startY;
 
@@ -1366,7 +1403,10 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
         dragState.axis = Math.abs(dx) >= Math.abs(dy) ? 'h' : 'v';
         if (dragState.axis === 'h') {
           vp.classList.add('is-dragging');
-          try { vp.setPointerCapture(e.pointerId) } catch(_){}
+          try { vp.setPointerCapture(dragState.pointerId) } catch(_e){}
+        } else {
+          stopDrag();
+          return;
         }
       }
 
@@ -1378,12 +1418,14 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
 
     const stopDrag = () => {
       if (!dragState) return;
+      try { vp.releasePointerCapture(dragState.pointerId) } catch(_e){}
       dragState.active = false;
       dragState = null;
       vp.classList.remove('is-dragging');
     };
     window.addEventListener('pointerup', stopDrag, {passive:true});
     window.addEventListener('pointercancel', stopDrag, {passive:true});
+    vp.addEventListener('lostpointercapture', stopDrag, {passive:true});
 
     /* ── KEYBOARD ── */
     vp.addEventListener('keydown', (e) => {
