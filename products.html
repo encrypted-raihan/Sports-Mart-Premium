@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sports Mart Premium — Kottarakkara</title>
+  <meta name="description" content="Precision sportswear and equipment in Kottarakkara, Kerala." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Core Colors */
+      --bg-base: #0A0A0A;
+      --bg-surface: #111111;
+      --bg-hover: #1A1A1A;
+
+      /* Text Colors */
+      --text-primary: #EDEDED;
+      --text-secondary: #888888;
+      --text-tertiary: #555555;
+
+      /* Accents & Borders */
+      --border-subtle: #2A2A2A;
+      --border-focus: #10B981;
+      --accent-primary: #10B981;
+      --accent-hover: #059669;
+
+      /* Typography */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+      /* Spacing */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-12: 48px;
+      --space-16: 64px;
+
+      /* Geometry */
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-input: 10px; /* Precise requirement */
+    }
+
+    /* Base Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-base);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--space-6);
+    }
+
+    /* Header */
+    .topbar {
+      position: sticky;
+      top: 0;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 100;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .brand {
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links {
+      display: none;
+      gap: var(--space-6);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+      transition: color 0.15s ease;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background-color: var(--text-primary);
+      color: var(--bg-base);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      transition: opacity 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--text-tertiary);
+    }
+
+    .badge {
+      background-color: var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 99px;
+      font-size: 11px;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    /* Forms & Inputs */
+    .search-container {
+      position: relative;
+      margin-bottom: var(--space-6);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+    }
+
+    .input-field {
+      width: 100%;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: var(--space-2) var(--space-3) var(--space-2) 36px;
+      border-radius: var(--radius-input); /* Utilizing the explicit 10px parameter */
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.15s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+
+    .input-field::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: var(--space-16) var(--space-6) var(--space-12);
+    }
+
+    .display {
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.1;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-4);
+    }
+
+    .subtitle {
+      font-size: clamp(16px, 2vw, 18px);
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: var(--space-8);
+    }
+
+    /* Inventory System */
+    .inventory-section {
+      padding-bottom: var(--space-16);
+    }
+
+    .inventory-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+
+    @media (min-width: 900px) {
+      .inventory-layout {
+        grid-template-columns: 240px 1fr;
+      }
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 88px;
+      align-self: start;
+    }
+
+    .filter-heading {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+      font-weight: 600;
+    }
+
+    .filter-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .filter-btn {
+      text-align: left;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: all 0.1s ease;
+      margin-left: -12px; /* Pull into alignment */
+    }
+
+    .filter-btn:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .filter-btn.active {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .grid-header {
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .result-count {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--space-6);
+    }
+
+    /* Product Card */
+    .card {
+      display: flex;
+      flex-direction: column;
+      group: product;
+    }
+
+    .card-media {
+      aspect-ratio: 1;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      transition: border-color 0.15s ease;
+    }
+
+    .card:hover .card-media {
+      border-color: var(--text-tertiary);
+    }
+
+    .card-meta {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-1);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+      line-height: 1.3;
+    }
+
+    .card-price {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .add-btn {
+      margin-top: auto;
+      width: 100%;
+      padding: 8px;
+      font-size: 13px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: transparent;
+      color: var(--text-primary);
+      transition: all 0.15s ease;
+    }
+
+    .add-btn:hover {
+      background-color: var(--bg-surface);
+      border-color: var(--text-primary);
+    }
+
+    /* Cart Drawer */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 900;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .overlay[aria-hidden="false"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 400px;
+      background-color: var(--bg-base);
+      border-left: 1px solid var(--border-subtle);
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer[aria-hidden="false"] {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: var(--space-6);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .drawer-header h2 {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .btn-icon {
+      color: var(--text-secondary);
+      padding: 4px;
+      margin: -4px;
+    }
+
+    .btn-icon:hover {
+      color: var(--text-primary);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-6);
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: var(--space-4);
+      align-items: start;
+      margin-bottom: var(--space-6);
+    }
+
+    .cart-item-media {
+      width: 48px;
+      height: 48px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .cart-item-info h4 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .cart-item-info p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
+    }
+
+    .qty-btn {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .qty-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .qty-val {
+      font-size: 12px;
+      width: 16px;
+      text-align: center;
+    }
+
+    .drawer-footer {
+      padding: var(--space-6);
+      border-top: 1px solid var(--border-subtle);
+      background-color: var(--bg-surface);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .total-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .drawer-note {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-align: center;
+      margin-top: var(--space-3);
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: var(--space-8) var(--space-6);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .footer-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Accessibility Utilities */
+    :focus-visible {
+      outline: 2px solid var(--border-focus);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="#" class="brand">Sports Mart</a>
+      <nav class="nav-links">
+        <a href="#inventory">Inventory</a>
+        <a href="#about">About</a>
+        <a href="#location">Location</a>
+      </nav>
+      <div class="actions">
+        <button id="cart-toggle" class="btn-secondary">
+          Cart <span id="cart-badge" class="badge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <h1 class="display">Precision sports gear.<br>Delivered across Kerala.</h1>
+      <p class="subtitle">Premium equipment for athletes and clubs, curated locally since 2014.</p>
+      <div class="hero-actions">
+        <a href="#inventory" class="btn-primary">Browse Inventory</a>
+      </div>
+    </section>
+
+    <section id="inventory" class="inventory-section container">
+      <div class="inventory-layout">
+
+        <aside class="sidebar">
+          <div class="search-container">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="search-input" class="input-field" placeholder="Search equipment..." aria-label="Search" />
+          </div>
+
+          <div class="filter-group">
+            <h3 class="filter-heading">Categories</h3>
+            <div id="category-filters" class="filter-list"></div>
+          </div>
+        </aside>
+
+        <div class="grid-container">
+          <div class="grid-header">
+            <span id="result-count" class="result-count">Loading...</span>
+          </div>
+          <div id="product-grid" class="product-grid"></div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <div class="footer-inner">
+      <div class="brand">Sports Mart</div>
+      <div class="footer-meta">Pulamon Junction, LIC Building, Kottarakkara, Kerala 691531</div>
+      <div class="footer-meta">© 2026 Sports Mart Premium.</div>
+    </div>
+  </footer>
+
+  <div id="cart-overlay" class="overlay" aria-hidden="true"></div>
+  <aside id="cart-drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <h2>Order Summary</h2>
+      <button id="close-cart" class="btn-icon" aria-label="Close Cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div id="cart-items" class="drawer-body"></div>
+    <div class="drawer-footer">
+      <div class="total-row">
+        <span>Total</span>
+        <span id="cart-total" class="total-value">₹0</span>
+      </div>
+      <button id="checkout-btn" class="btn-primary w-full">Checkout via WhatsApp</button>
+      <p class="drawer-note">We will confirm availability and process your order securely.</p>
+    </div>
+  </aside>
+
+  <script>
+    /**
+     * Sports Mart Premium — State Management & Interaction
+     * Designed for absolute performance and predictability.
+     */
+
+    const AppState = {
+      cart: [],
+      filters: {
+        search: '',
+        category: 'All'
+      },
+      products: [
+        { id: 'cricket-bat-pro', name: 'Professional Cricket Bat', category: 'Cricket', brand: 'Premium Range', price: 1299, emoji: '🏏' },
+        { id: 'badminton-racket', name: 'Tournament Racket', category: 'Badminton', brand: 'Carbon Series', price: 899, emoji: '🏸' },
+        { id: 'football-pro', name: 'Pro Match Football', category: 'Football', brand: 'Match Ready', price: 749, emoji: '⚽' },
+        { id: 'jersey-premium', name: 'Premium Sports Jersey', category: 'Sportswear', brand: 'Dri-Fit', price: 599, emoji: '👕' },
+        { id: 'resistance-bands', name: 'Resistance Bands', category: 'Fitness', brand: 'Training Series', price: 449, emoji: '🏋️' },
+        { id: 'basketball-train', name: 'Training Basketball', category: 'Basketball', brand: 'Indoor/Outdoor', price: 849, emoji: '🏀' },
+        { id: 'swim-goggles', name: 'Swim Goggles Pro', category: 'Swimming', brand: 'Aquatic Range', price: 399, emoji: '🏊' },
+        { id: 'shuttle-pack', name: 'Tournament Shuttles', category: 'Badminton', brand: 'Match Pack', price: 299, emoji: '🥏' },
+        { id: 'chess-premium', name: 'Premium Chess Set', category: 'Chess', brand: 'Elite Board', price: 649, emoji: '♟️' },
+        { id: 'tracksuit-pro', name: 'Performance Tracksuit', category: 'Sportswear', brand: 'Warmup Series', price: 1199, emoji: '🧥' },
+        { id: 'cricket-pads', name: 'Batting Pads Lite', category: 'Cricket', brand: 'Protection', price: 1599, emoji: '🛡️' },
+        { id: 'football-boots', name: 'Turf Grip Boots', category: 'Football', brand: 'Footwear', price: 1799, emoji: '🥾' },
+        { id: 'running-shoes', name: 'Lite Foam Runners', category: 'Fitness', brand: 'Footwear', price: 2199, emoji: '👟' }
+      ]
+    };
+
+    const UI = {
+      grid: document.getElementById('product-grid'),
+      categoryFilters: document.getElementById('category-filters'),
+      searchInput: document.getElementById('search-input'),
+      resultCount: document.getElementById('result-count'),
+
+      cartDrawer: document.getElementById('cart-drawer'),
+      cartOverlay: document.getElementById('cart-overlay'),
+      cartItems: document.getElementById('cart-items'),
+      cartTotal: document.getElementById('cart-total'),
+      cartBadge: document.getElementById('cart-badge'),
+
+      formatCurrency: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })
+    };
+
+    /* --- Core Logic --- */
+
+    function init() {
+      loadCartData();
+      renderCategories();
+      bindEvents();
+      renderProducts();
+      updateCartUI();
+    }
+
+    function bindEvents() {
+      // Filtering
+      UI.searchInput.addEventListener('input', (e) => {
+        AppState.filters.search = e.target.value.toLowerCase();
+        renderProducts();
+      });
+
+      UI.categoryFilters.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+          AppState.filters.category = e.target.dataset.category;
+          renderCategories(); // Update active states
+          renderProducts();
+        }
+      });
+
+      // Cart Drawer
+      document.getElementById('cart-toggle').addEventListener('click', toggleCart);
+      document.getElementById('close-cart').addEventListener('click', toggleCart);
+      UI.cartOverlay.addEventListener('click', toggleCart);
+
+      // Cart Interactions (Delegation)
+      UI.grid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.add-btn');
+        if (btn) addToCart(btn.dataset.id);
+      });
+
+      UI.cartItems.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        if (btn.classList.contains('qty-btn')) {
+          updateCartQuantity(btn.dataset.id, parseInt(btn.dataset.delta));
+        }
+      });
+
+      // Checkout
+      document.getElementById('checkout-btn').addEventListener('click', executeCheckout);
+    }
+
+    /* --- Render Pipelines --- */
+
+    function renderProducts() {
+      const filtered = AppState.products.filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(AppState.filters.search) || 
+                              p.category.toLowerCase().includes(AppState.filters.search);
+        const matchesCategory = AppState.filters.category === 'All' || p.category === AppState.filters.category;
+        return matchesSearch && matchesCategory;
+      });
+
+      UI.resultCount.textContent = `${filtered.length} items found`;
+
+      if (filtered.length === 0) {
+        UI.grid.innerHTML = `<div class="card-meta">No inventory found matching your criteria.</div>`;
+        return;
+      }
+
+      UI.grid.innerHTML = filtered.map(p => `
+        <article class="card">
+          <div class="card-media" aria-hidden="true">${p.emoji}</div>
+          <div class="card-meta">${p.category} · ${p.brand}</div>
+          <h3 class="card-title">${p.name}</h3>
+          <div class="card-price">${UI.formatCurrency.format(p.price)}</div>
+          <button class="add-btn" data-id="${p.id}">Add to Cart</button>
+        </article>
+      `).join('');
+    }
+
+    function renderCategories() {
+      const categories = ['All', ...new Set(AppState.products.map(p => p.category))];
+
+      UI.categoryFilters.innerHTML = categories.map(cat => `
+        <button class="filter-btn ${AppState.filters.category === cat ? 'active' : ''}" data-category="${cat}">
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    /* --- Cart Mechanics --- */
+
+    function loadCartData() {
+      try {
+        const saved = localStorage.getItem('sm_cart');
+        if (saved) AppState.cart = JSON.parse(saved);
+      } catch (e) {
+        console.error("Cart retrieval failed", e);
+      }
+    }
+
+    function saveCartData() {
+      localStorage.setItem('sm_cart', JSON.stringify(AppState.cart));
+    }
+
+    function addToCart(productId) {
+      const existing = AppState.cart.find(item => item.id === productId);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        AppState.cart.push({ id: productId, qty: 1 });
+      }
+
+      saveCartData();
+      updateCartUI();
+      toggleCart(true); // Open drawer on add
+    }
+
+    function updateCartQuantity(productId, delta) {
+      const index = AppState.cart.findIndex(item => item.id === productId);
+      if (index > -1) {
+        AppState.cart[index].qty += delta;
+        if (AppState.cart[index].qty <= 0) {
+          AppState.cart.splice(index, 1);
+        }
+        saveCartData();
+        updateCartUI();
+      }
+    }
+
+    function updateCartUI() {
+      const totalItems = AppState.cart.reduce((sum, item) => sum + item.qty, 0);
+      UI.cartBadge.textContent = totalItems;
+
+      if (AppState.cart.length === 0) {
+        UI.cartItems.innerHTML = `<p class="drawer-note" style="margin-top: 48px;">Your cart is empty.</p>`;
+        UI.cartTotal.textContent = '₹0';
+        return;
+      }
+
+      let totalValue = 0;
+
+      UI.cartItems.innerHTML = AppState.cart.map(cartItem => {
+        const product = AppState.products.find(p => p.id === cartItem.id);
+        if (!product) return '';
+
+        totalValue += product.price * cartItem.qty;
+
+        return `
+          <div class="cart-item">
+            <div class="cart-item-media" aria-hidden="true">${product.emoji}</div>
+            <div class="cart-item-info">
+              <h4>${product.name}</h4>
+              <p>${UI.formatCurrency.format(product.price)}</p>
+              <div class="cart-item-controls">
+                <button class="qty-btn" data-id="${product.id}" data-delta="-1" aria-label="Decrease quantity">−</button>
+                <span class="qty-val">${cartItem.qty}</span>
+                <button class="qty-btn" data-id="${product.id}" data-delta="1" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="cart-item-price">
+              ${UI.formatCurrency.format(product.price * cartItem.qty)}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      UI.cartTotal.textContent = UI.formatCurrency.format(totalValue);
+    }
+
+    function toggleCart(forceOpen = false) {
+      const isOpening = forceOpen === true || UI.cartDrawer.getAttribute('aria-hidden') === 'true';
+      UI.cartDrawer.setAttribute('aria-hidden', !isOpening);
+      UI.cartOverlay.setAttribute('aria-hidden', !isOpening);
+      document.body.style.overflow = isOpening ? 'hidden' : '';
+    }
+
+    function executeCheckout() {
+      if (AppState.cart.length === 0) return;
+
+      const WHATSAPP_NUMBER = '918921373326';
+      const orderLines = AppState.cart.map((cartItem, i) => {
+        const p = AppState.products.find(x => x.id === cartItem.id);
+        return `${i + 1}. ${p.name} (x${cartItem.qty}) - ${UI.formatCurrency.format(p.price * cartItem.qty)}`;
+      });
+
+      const text = `Hi Sports Mart, I'd like to order:\n\n${orderLines.join('\n')}\n\nTotal: ${UI.cartTotal.textContent}`;
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // Bootstrap
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
