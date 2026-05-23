@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#080B0F" />
+<title>Sports Mart Premium — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080C;
+  --bg2:#0B1017;
+  --card:#10161F;
+  --card2:#161D28;
+  --line:rgba(255,255,255,.08);
+  --text:#F2EFE9;
+  --muted:#B4AEA6;
+  --sub:#787169;
+  --fire:#E8310A;
+  --fire2:#FF5A2E;
+  --acid:#C8F542;
+  --gold:#F0B429;
+  --ice:#4FD8FF;
+  --shadow:0 24px 80px rgba(0,0,0,.42);
+  --shadow2:0 18px 50px rgba(0,0,0,.28);
+  --radius:22px;
+  --font-head:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+  --font-mono:'Space Mono',monospace;
+}
+*,
+*::before,
+*::after{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(232,49,10,.10), transparent 30%),
+    radial-gradient(circle at 85% 10%, rgba(200,245,66,.08), transparent 30%),
+    linear-gradient(180deg, #05070A 0%, #070A0E 32%, #090D12 100%);
+  color:var(--text);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+a{color:inherit}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.container{width:min(100%,1560px);margin:0 auto;padding:1rem}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  backdrop-filter:blur(18px);
+  background:rgba(6,8,12,.84);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.topbar-inner{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  width:min(100%,1560px);margin:0 auto;padding:1rem;
+}
+.brand{display:flex;flex-direction:column;gap:.2rem}
+.brand h1{margin:0;font-family:var(--font-head);font-size:1.8rem;line-height:1;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.brand p{margin:0;color:var(--sub);font-family:var(--font-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase}
+.top-actions{display:flex;flex-wrap:wrap;gap:.65rem;justify-content:flex-end}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  border:none;border-radius:999px;padding:.85rem 1rem;
+  background:rgba(255,255,255,.05);color:var(--text);
+  text-decoration:none;font-family:var(--font-head);
+  font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease;
+  border:1px solid rgba(255,255,255,.08)
+}
+.btn:hover{transform:translateY(-1px);border-color:rgba(200,245,66,.25);background:rgba(200,245,66,.06)}
+.btn.primary{background:linear-gradient(135deg,var(--fire),var(--fire2));border-color:transparent}
+.btn.green{background:#25D366;color:#000;border-color:transparent}
+.btn.ghost{background:transparent}
+.notice{
+  width:min(100%,1560px);
+  margin:0 auto;
+  padding:1rem;
+}
+.notice-box{
+  padding:.95rem 1rem;
+  border-radius:16px;
+  background:rgba(79,216,255,.08);
+  border:1px solid rgba(79,216,255,.16);
+  color:#d6f7ff;
+  font-size:.92rem;
+  line-height:1.6;
+}
+.grid{
+  display:grid;
+  grid-template-columns:420px minmax(0,1fr);
+  gap:1rem;
+  align-items:start;
+  padding:0 1rem 1rem;
+  width:min(100%,1560px);
+  margin:0 auto;
+}
+.panel{
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow2);
+  overflow:hidden;
+}
+.panel-head{
+  padding:1rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:1rem
+}
+.panel-head h2{margin:0;font-family:var(--font-head);font-size:1.35rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
+.panel-head p{margin:.35rem 0 0;color:var(--muted);font-size:.9rem;line-height:1.65}
+.form{padding:1rem;display:grid;gap:.85rem}
+.field{display:grid;gap:.38rem}
+.field label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.input,.textarea,.select{
+  width:100%;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  color:var(--text);
+  border-radius:14px;
+  padding:.85rem 1rem;
+  outline:none;
+}
+.textarea{min-height:92px;resize:vertical}
+.input:focus,.textarea:focus,.select:focus{border-color:rgba(200,245,66,.35)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+.preview{
+  display:grid;grid-template-columns:120px 1fr;gap:.9rem;
+  padding:1rem;border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.025);border-radius:18px;
+}
+.preview-box{
+  width:120px;height:120px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(232,49,10,.24),rgba(200,245,66,.12));
+  border:1px solid rgba(255,255,255,.08);
+  display:grid;place-items:center;
+}
+.preview-box img{width:100%;height:100%;object-fit:cover;display:block}
+.preview-fallback{font-family:var(--font-head);font-size:2rem;font-weight:900;letter-spacing:.08em}
+.preview-meta h3{margin:0 0 .35rem;font-family:var(--font-head);font-size:1.4rem;text-transform:uppercase;letter-spacing:.06em}
+.preview-meta p{margin:.15rem 0;color:var(--muted);line-height:1.6;font-size:.92rem}
+.catalog-tools{
+  display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;
+  padding:1rem;border-bottom:1px solid rgba(255,255,255,.06)
+}
+.stats{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;
+  padding:1rem;border-bottom:1px solid rgba(255,255,255,.06)
+}
+.stat{
+  padding:.95rem 1rem;border-radius:16px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)
+}
+.stat .v{font-family:var(--font-head);font-size:2rem;line-height:1;font-weight:900}
+.stat .l{margin-top:.25rem;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.list{padding:1rem;display:grid;gap:.85rem}
+.item{
+  display:grid;grid-template-columns:84px minmax(0,1fr) auto;
+  gap:.85rem;align-items:start;
+  padding:.85rem;border-radius:18px;
+  background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)
+}
+.thumb{
+  width:84px;height:84px;border-radius:16px;overflow:hidden;
+  display:grid;place-items:center;background:rgba(255,255,255,.04)
+}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .fallback{font-family:var(--font-head);font-size:1.1rem;font-weight:900}
+.item h3{margin:0 0 .25rem;font-family:var(--font-head);font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em}
+.meta{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.12em;color:var(--sub);text-transform:uppercase}
+.desc{margin:.45rem 0 0;color:var(--muted);font-size:.9rem;line-height:1.6}
+.actions{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end}
+.pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:999px;padding:.58rem .75rem;
+  border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);
+  color:var(--text);font-family:var(--font-head);font-size:.68rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase
+}
+.pill.danger{background:rgba(232,49,10,.12);border-color:rgba(232,49,10,.25)}
+.pill.good{background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.25);color:#25D366}
+.empty{
+  padding:2rem;border:1px dashed rgba(255,255,255,.12);border-radius:18px;
+  text-align:center;background:rgba(255,255,255,.02)
+}
+.empty h3{margin:.25rem 0 .45rem;font-family:var(--font-head);font-size:1.6rem;text-transform:uppercase}
+.empty p{margin:0;color:var(--muted);line-height:1.7}
+.toast-wrap{
+  position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);
+  display:flex;flex-direction:column;gap:.55rem;z-index:50;pointer-events:none;
+  width:min(92vw,420px)
+}
+.toast{
+  pointer-events:none;
+  background:rgba(13,17,24,.92);border:1px solid rgba(255,255,255,.08);
+  color:var(--text);padding:.85rem 1rem;border-radius:16px;
+  box-shadow:var(--shadow2);display:flex;align-items:flex-start;gap:.7rem;
+  backdrop-filter:blur(14px);transform:translateY(12px);opacity:0;animation:toastIn .25s ease forwards;
+}
+.toast .b{width:10px;height:10px;border-radius:999px;margin-top:.3rem;background:var(--acid);flex:none}
+.toast .t{font-size:.92rem;line-height:1.45}
+@keyframes toastIn{to{transform:translateY(0);opacity:1}}
+input[type="file"]{padding:.8rem;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.12);border-radius:14px;color:var(--muted)}
+small.help{color:var(--sub);font-size:.78rem;line-height:1.5}
+@media(max-width:1080px){
+  .grid{grid-template-columns:1fr}
+  .row3,.row2{grid-template-columns:1fr}
+  .item{grid-template-columns:84px minmax(0,1fr)}
+  .actions{justify-content:flex-start}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .topbar-inner{flex-direction:column;align-items:flex-start}
+  .stats{grid-template-columns:1fr}
+  .preview{grid-template-columns:1fr}
+  .preview-box{width:100%;height:180px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <h1>Sports Mart Premium</h1>
+      <p>Product Admin · localStorage catalogue</p>
+    </div>
+    <div class="top-actions">
+      <a class="btn ghost" href="./products.html" target="_blank" rel="noopener">Open Store</a>
+      <button class="btn" id="seedBtn" type="button">Reset Seed</button>
+      <button class="btn" id="exportBtn" type="button">Export JSON</button>
+      <label class="btn" for="importFile">Import JSON</label>
+      <input id="importFile" type="file" accept="application/json" hidden>
+      <button class="btn green" id="clearAllBtn" type="button">Clear All</button>
+    </div>
+  </div>
+</div>
+
+<div class="notice">
+  <div class="notice-box">
+    Use this panel to add, edit, delete, duplicate, export, or import products. Images are stored as base64 in localStorage, so they persist on refresh in the same browser. The homepage stays fixed with featured products; this panel only manages the full catalogue shown on products.html.
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2 id="formTitle">Add Product</h2>
+        <p>Fill the form, upload an image, and save. Editing an item will update the same entry.</p>
+      </div>
+      <button class="btn primary" id="resetBtn" type="button">New Product</button>
+    </div>
+
+    <form class="form" id="productForm">
+      <input type="hidden" id="editId" />
+
+      <div class="row2">
+        <div class="field">
+          <label for="name">Product name</label>
+          <input class="input" id="name" required placeholder="Professional Cricket Bat" />
+        </div>
+        <div class="field">
+          <label for="sport">Sport</label>
+          <select class="select" id="sport" required>
+            <option>Cricket</option>
+            <option>Football</option>
+            <option>Badminton</option>
+            <option>Basketball</option>
+            <option>Fitness</option>
+            <option>Sportswear</option>
+            <option>Swimming</option>
+            <option>Chess</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="category">Category</label>
+          <select class="select" id="category" required>
+            <option>Equipment</option>
+            <option>Footwear</option>
+            <option>Accessories</option>
+            <option>Apparel</option>
+            <option>Training</option>
+            <option>General</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="brand">Brand / line</label>
+          <input class="input" id="brand" placeholder="Cricket · Premium Range" />
+        </div>
+      </div>
+
+      <div class="row3">
+        <div class="field">
+          <label for="price">Price (₹)</label>
+          <input class="input" id="price" type="number" min="0" step="1" required />
+        </div>
+        <div class="field">
+          <label for="oldPrice">Old price (₹)</label>
+          <input class="input" id="oldPrice" type="number" min="0" step="1" />
+        </div>
+        <div class="field">
+          <label for="year">Year</label>
+          <input class="input" id="year" type="number" min="2000" max="2100" step="1" />
+        </div>
+      </div>
+
+      <div class="row3">
+        <div class="field">
+          <label for="badge">Badge</label>
+          <input class="input" id="badge" placeholder="Bestseller" />
+        </div>
+        <div class="field">
+          <label for="badgeTone">Badge tone</label>
+          <select class="select" id="badgeTone">
+            <option value="fire">fire</option>
+            <option value="gold">gold</option>
+            <option value="green">green</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="popular">Popular score</label>
+          <input class="input" id="popular" type="number" min="0" max="100" step="1" />
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="featured">Featured rank</label>
+          <input class="input" id="featured" type="number" min="0" step="1" />
+        </div>
+        <div class="field">
+          <label for="tags">Tags</label>
+          <input class="input" id="tags" placeholder="bat, willow, performance" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="imageFile">Product image</label>
+        <input id="imageFile" type="file" accept="image/*" />
+        <small class="help">Choose a clean product photo. It will be stored in localStorage as a base64 image.</small>
+      </div>
+
+      <div class="preview">
+        <div class="preview-box" id="previewBox">
+          <div class="preview-fallback" id="previewFallback">P</div>
+        </div>
+        <div class="preview-meta">
+          <h3 id="previewName">Preview</h3>
+          <p id="previewInfo">No image selected yet.</p>
+          <small class="help">Tip: use square product photos for the best storefront look.</small>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:.65rem;flex-wrap:wrap">
+        <button class="btn primary" type="submit" id="saveBtn">Save Product</button>
+        <button class="btn" type="button" id="cancelEditBtn">Cancel Edit</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Catalogue</h2>
+        <p>Everything below is stored in localStorage. Add, edit, delete, export, or import without touching products.html.</p>
+      </div>
+      <div style="text-align:right;color:var(--sub);font-family:var(--font-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase" id="countMeta"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="v" id="statProducts">0</div>
+        <div class="l">Products</div>
+      </div>
+      <div class="stat">
+        <div class="v" id="statSports">0</div>
+        <div class="l">Sports</div>
+      </div>
+      <div class="stat">
+        <div class="v" id="statImages">0</div>
+        <div class="l">With images</div>
+      </div>
+      <div class="stat">
+        <div class="v" id="statFeatured">0</div>
+        <div class="l">Featured</div>
+      </div>
+    </div>
+
+    <div class="catalog-tools">
+      <button class="btn" type="button" id="sortNameBtn">Sort A–Z</button>
+      <button class="btn" type="button" id="sortSportBtn">Sort by Sport</button>
+      <button class="btn" type="button" id="duplicateSeedBtn">Restore Seed on Top</button>
+    </div>
+
+    <div class="list" id="productList"></div>
+  </section>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  const STORAGE_KEY = 'sportsmart_products_v1';
+
+  const DEFAULT_PRODUCTS = [
+    { id:'cricket-bat-pro',        name:'Professional Cricket Bat',       sport:'Cricket',    category:'Equipment',   brand:'Kashmir Willow · Premium Range',  badge:'Bestseller',  badgeTone:'fire',  image:'', price:1299, oldPrice:1499, popular:99, featured:1,  year:2024, tags:['bat','kashmir willow','performance'] },
+    { id:'cricket-pads-lite',      name:'Batting Pads — Lite Pro',        sport:'Cricket',    category:'Equipment',   brand:'Cricket · Protection Series',     badge:'Pro',         badgeTone:'gold',  image:'', price:1599, oldPrice:1799, popular:84, featured:11, year:2024, tags:['pads','protection','equipment'] },
+    { id:'football-pro-match',     name:'Pro Match Football — Size 5',    sport:'Football',   category:'Equipment',   brand:'Football · Match Ready',          badge:'Popular',     badgeTone:'fire',  image:'', price:749,  oldPrice:899,  popular:92, featured:3,  year:2024, tags:['ball','size 5','match'] },
+    { id:'football-boots',         name:'Football Boots — Turf Grip',     sport:'Football',   category:'Footwear',    brand:'Football · Footwear Line',        badge:'Fresh',       badgeTone:'green', image:'', price:1799, oldPrice:1999, popular:91, featured:12, year:2025, tags:['boots','footwear','grip'] },
+    { id:'badminton-racket-carbon',name:'Tournament Racket — Carbon',     sport:'Badminton',  category:'Equipment',   brand:'Badminton · Carbon Series',       badge:'New Stock',   badgeTone:'green', image:'', price:899,  oldPrice:1099, popular:95, featured:2,  year:2025, tags:['racket','carbon fibre','lightweight'] },
+    { id:'shuttle-pack',           name:'Tournament Shuttle Pack',        sport:'Badminton',  category:'Accessories', brand:'Badminton · Match Pack',          badge:'Best Value',  badgeTone:'fire',  image:'', price:299,  oldPrice:399,  popular:82, featured:8,  year:2024, tags:['shuttles','nylon','match'] },
+    { id:'basketball-training',    name:'Basketball Training Ball',       sport:'Basketball', category:'Equipment',   brand:'Basketball · Training Line',      badge:'Recommended', badgeTone:'gold',  image:'', price:849,  oldPrice:999,  popular:87, featured:6,  year:2024, tags:['ball','training','indoor'] },
+    { id:'resistance-bands',       name:'Resistance Bands — Full Set',    sport:'Fitness',    category:'Accessories', brand:'Fitness · Training Series',       badge:'New',         badgeTone:'green', image:'', price:449,  oldPrice:599,  popular:85, featured:5,  year:2025, tags:['bands','training','fitness'] },
+    { id:'running-shoes',          name:'Running Shoes — Lite Foam',      sport:'Fitness',    category:'Footwear',    brand:'Fitness · Run Line',              badge:'New',         badgeTone:'green', image:'', price:2199, oldPrice:2499, popular:93, featured:13, year:2025, tags:['shoes','footwear','running'] },
+    { id:'jersey-premium',         name:'Premium Sports Jersey',          sport:'Sportswear', category:'Apparel',     brand:'Sportswear · Dri-Fit Collection', badge:'Top Rated',   badgeTone:'gold',  image:'', price:599,  oldPrice:799,  popular:90, featured:4,  year:2025, tags:['jersey','drifit','apparel'] },
+    { id:'tracksuit-pro',          name:'Performance Tracksuit',          sport:'Sportswear', category:'Apparel',     brand:'Sportswear · Warmup Series',      badge:'Popular',     badgeTone:'fire',  image:'', price:1199, oldPrice:1399, popular:88, featured:10, year:2025, tags:['tracksuit','warmup','apparel'] },
+    { id:'swim-goggles-pro',       name:'Swim Goggles — Pro Lens',        sport:'Swimming',   category:'Accessories', brand:'Swimming · Aquatic Range',        badge:'Fresh',       badgeTone:'green', image:'', price:399,  oldPrice:499,  popular:76, featured:7,  year:2025, tags:['goggles','swimming','accessories'] },
+    { id:'chess-set-premium',      name:'Premium Chess Set',              sport:'Chess',      category:'Accessories', brand:'Chess · Elite Board',             badge:'Classic',     badgeTone:'gold',  image:'', price:649,  oldPrice:799,  popular:72, featured:9,  year:2023, tags:['board','pieces','chess'] },
+  ];
+
+  const STORAGE_PRODUCTS = STORAGE_KEY;
+
+  const $ = (id) => document.getElementById(id);
+
+  const els = {
+    productForm: $('productForm'),
+    editId: $('editId'),
+    name: $('name'),
+    sport: $('sport'),
+    category: $('category'),
+    brand: $('brand'),
+    price: $('price'),
+    oldPrice: $('oldPrice'),
+    year: $('year'),
+    badge: $('badge'),
+    badgeTone: $('badgeTone'),
+    popular: $('popular'),
+    featured: $('featured'),
+    tags: $('tags'),
+    imageFile: $('imageFile'),
+    previewBox: $('previewBox'),
+    previewFallback: $('previewFallback'),
+    previewName: $('previewName'),
+    previewInfo: $('previewInfo'),
+    productList: $('productList'),
+    countMeta: $('countMeta'),
+    statProducts: $('statProducts'),
+    statSports: $('statSports'),
+    statImages: $('statImages'),
+    statFeatured: $('statFeatured'),
+    toastWrap: $('toastWrap'),
+    formTitle: $('formTitle'),
+    saveBtn: $('saveBtn'),
+    cancelEditBtn: $('cancelEditBtn'),
+    resetBtn: $('resetBtn'),
+    seedBtn: $('seedBtn'),
+    exportBtn: $('exportBtn'),
+    importFile: $('importFile'),
+    clearAllBtn: $('clearAllBtn'),
+    sortNameBtn: $('sortNameBtn'),
+    sortSportBtn: $('sortSportBtn'),
+    duplicateSeedBtn: $('duplicateSeedBtn'),
+  };
+
+  let state = {
+    products: loadProducts(),
+    editingId: null,
+    previewImage: '',
+    sort: 'featured',
+  };
+
+  function seedIfEmpty(){
+    if(!localStorage.getItem(STORAGE_PRODUCTS)){
+      localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+    }
+  }
+
+  function loadProducts(){
+    seedIfEmpty();
+    try{
+      const raw = JSON.parse(localStorage.getItem(STORAGE_PRODUCTS) || '[]');
+      return Array.isArray(raw) ? raw : [];
+    }catch{
+      localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+      return [...DEFAULT_PRODUCTS];
+    }
+  }
+
+  function saveProducts(products){
+    localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(products));
+    state.products = products;
+    renderAll();
+  }
+
+  function makeId(prefix='prod'){
+    return `${prefix}-${Math.random().toString(36).slice(2,8)}-${Date.now().toString(36)}`;
+  }
+
+  function normalize(product){
+    return {
+      id: product.id || makeId('prod'),
+      name: product.name || 'Untitled Product',
+      sport: product.sport || 'Sportswear',
+      category: product.category || 'General',
+      brand: product.brand || '',
+      badge: product.badge || '',
+      badgeTone: product.badgeTone || 'fire',
+      image: product.image || '',
+      price: Number(product.price || 0),
+      oldPrice: Number(product.oldPrice || 0),
+      popular: Number(product.popular || 0),
+      featured: Number(product.featured || 999),
+      year: Number(product.year || new Date().getFullYear()),
+      tags: Array.isArray(product.tags) ? product.tags : String(product.tags || '').split(',').map(s => s.trim()).filter(Boolean)
+    };
+  }
+
+  function safeText(v){
+    return String(v ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'","&#39;");
+  }
+
+  function toast(message){
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = `<div class="b"></div><div class="t">${safeText(message)}</div>`;
+    els.toastWrap.appendChild(el);
+    setTimeout(() => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(10px)';
+      setTimeout(() => el.remove(), 220);
+    }, 2200);
+  }
+
+  function updatePreview(image, name, brand, sport){
+    els.previewName.textContent = name || 'Preview';
+    els.previewInfo.textContent = [brand, sport].filter(Boolean).join(' · ') || 'No image selected yet.';
+    els.previewBox.innerHTML = image
+      ? `<img src="${safeText(image)}" alt="${safeText(name || 'Product preview')}">`
+      : `<div class="preview-fallback">${safeText((name || 'P').slice(0,1).toUpperCase())}</div>`;
+  }
+
+  function resetForm(keepMessage = false){
+    state.editingId = null;
+    els.editId.value = '';
+    els.formTitle.textContent = 'Add Product';
+    els.saveBtn.textContent = 'Save Product';
+    els.productForm.reset();
+    els.badgeTone.value = 'fire';
+    els.year.value = new Date().getFullYear();
+    els.popular.value = 0;
+    els.featured.value = 999;
+    state.previewImage = '';
+    updatePreview('', 'Preview', '', '');
+    if(!keepMessage) toast('Ready for a new product');
+  }
+
+  function fillForm(product){
+    const p = normalize(product);
+    state.editingId = p.id;
+    els.editId.value = p.id;
+    els.formTitle.textContent = 'Edit Product';
+    els.saveBtn.textContent = 'Update Product';
+    els.name.value = p.name;
+    els.sport.value = p.sport;
+    els.category.value = p.category;
+    els.brand.value = p.brand;
+    els.price.value = p.price;
+    els.oldPrice.value = p.oldPrice || '';
+    els.year.value = p.year || new Date().getFullYear();
+    els.badge.value = p.badge;
+    els.badgeTone.value = p.badgeTone || 'fire';
+    els.popular.value = p.popular || 0;
+    els.featured.value = p.featured || 999;
+    els.tags.value = (p.tags || []).join(', ');
+    state.previewImage = p.image || '';
+    updatePreview(p.image || '', p.name, p.brand, p.sport);
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  function renderAll(){
+    const products = state.products.map(normalize);
+    const sorted = sortCatalog(products, state.sort);
+    const count = products.length;
+    const sports = new Set(products.map(p => p.sport));
+    const images = products.filter(p => !!p.image).length;
+    const featured = products.filter(p => Number(p.featured || 999) < 999).length;
+
+    els.countMeta.textContent = `${count} products`;
+    els.statProducts.textContent = String(count);
+    els.statSports.textContent = String(sports.size);
+    els.statImages.textContent = String(images);
+    els.statFeatured.textContent = String(featured);
+
+    if(!sorted.length){
+      els.productList.innerHTML = `
+        <div class="empty">
+          <h3>No products yet</h3>
+          <p>Add your first product using the form on the left.</p>
+        </div>
+      `;
+      return;
+    }
+
+    els.productList.innerHTML = sorted.map(renderItem).join('');
+  }
+
+  function sortCatalog(list, sort){
+    const copy = [...list];
+    switch(sort){
+      case 'sport':
+        copy.sort((a,b) => a.sport.localeCompare(b.sport) || a.name.localeCompare(b.name));
+        break;
+      case 'featured':
+      default:
+        copy.sort((a,b) => (a.featured || 999) - (b.featured || 999) || a.name.localeCompare(b.name));
+        break;
+    }
+    return copy;
+  }
+
+  function renderItem(p){
+    const fallback = safeText((p.name || 'P').slice(0,1).toUpperCase());
+    const tags = (p.tags || []).slice(0,4).map(t => `<span class="meta" style="display:inline-flex;align-items:center;padding:.25rem .45rem;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.025);margin:.15rem .25rem .15rem 0">${safeText(t)}</span>`).join('');
+    return `
+      <article class="item" data-item-id="${safeText(p.id)}">
+        <div class="thumb">
+          ${p.image ? `<img src="${safeText(p.image)}" alt="${safeText(p.name)}">` : `<div class="fallback">${fallback}</div>`}
+        </div>
+        <div>
+          <h3>${safeText(p.name)}</h3>
+          <div class="meta">${safeText(p.sport)} · ${safeText(p.category)} · ${safeText(p.brand || 'No brand')}</div>
+          <div class="desc">
+            ${safeText(p.badge || 'No badge')} · ₹${safeText(p.price)}${p.oldPrice ? ` · Old ₹${safeText(p.oldPrice)}` : ''} · Rank ${safeText(p.featured || 999)} · Year ${safeText(p.year || '')}
+          </div>
+          <div style="margin-top:.55rem">${tags}</div>
+        </div>
+        <div class="actions">
+          <button class="pill good" type="button" data-edit="${safeText(p.id)}">Edit</button>
+          <button class="pill" type="button" data-dup="${safeText(p.id)}">Duplicate</button>
+          <button class="pill danger" type="button" data-del="${safeText(p.id)}">Delete</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function handleSubmit(event){
+    event.preventDefault();
+    const existing = state.editingId ? state.products.find(p => p.id === state.editingId) : null;
+    const file = els.imageFile.files && els.imageFile.files[0];
+    const proceedWithImage = (image) => {
+      const product = normalize({
+        id: existing ? existing.id : makeId('prod'),
+        name: els.name.value.trim(),
+        sport: els.sport.value,
+        category: els.category.value,
+        brand: els.brand.value.trim(),
+        badge: els.badge.value.trim(),
+        badgeTone: els.badgeTone.value,
+        image: image || existing?.image || '',
+        price: Number(els.price.value || 0),
+        oldPrice: Number(els.oldPrice.value || 0),
+        popular: Number(els.popular.value || 0),
+        featured: Number(els.featured.value || 999),
+        year: Number(els.year.value || new Date().getFullYear()),
+        tags: els.tags.value.split(',').map(s => s.trim()).filter(Boolean),
+      });
+
+      const products = [...state.products];
+      if(existing){
+        const idx = products.findIndex(p => p.id === existing.id);
+        if(idx >= 0) products[idx] = product;
+      }else{
+        products.unshift(product);
+      }
+      saveProducts(products);
+      toast(existing ? 'Product updated' : 'Product added');
+      resetForm(true);
+      updatePreview('', 'Preview', '', '');
+    };
+
+    if(file){
+      const reader = new FileReader();
+      reader.onload = () => proceedWithImage(String(reader.result || ''));
+      reader.readAsDataURL(file);
+    }else{
+      proceedWithImage('');
+    }
+  }
+
+  function handleListClick(event){
+    const editId = event.target.closest('[data-edit]')?.getAttribute('data-edit');
+    const dupId = event.target.closest('[data-dup]')?.getAttribute('data-dup');
+    const delId = event.target.closest('[data-del]')?.getAttribute('data-del');
+
+    if(editId){
+      const product = state.products.find(p => p.id === editId);
+      if(product) fillForm(product);
+    }
+
+    if(dupId){
+      const product = state.products.find(p => p.id === dupId);
+      if(product){
+        const copy = normalize({
+          ...product,
+          id: makeId('dup'),
+          name: `${product.name} Copy`,
+          featured: Number(product.featured || 999) + 1,
+        });
+        saveProducts([copy, ...state.products]);
+        toast('Product duplicated');
+      }
+    }
+
+    if(delId){
+      const product = state.products.find(p => p.id === delId);
+      if(!product) return;
+      if(!confirm(`Delete "${product.name}"?`)) return;
+      saveProducts(state.products.filter(p => p.id !== delId));
+      toast('Product deleted');
+      if(state.editingId === delId) resetForm(true);
+    }
+  }
+
+  function exportJSON(){
+    const data = JSON.stringify(state.products, null, 2);
+    const blob = new Blob([data], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sportsmart-products.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Exported JSON');
+  }
+
+  async function importJSON(file){
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    const incoming = Array.isArray(parsed) ? parsed : Array.isArray(parsed.products) ? parsed.products : null;
+    if(!incoming) throw new Error('Invalid JSON file');
+    const normalized = incoming.map(normalize);
+    saveProducts(normalized);
+    toast('Imported products');
+  }
+
+  function seedReset(){
+    if(!confirm('Restore the default seed catalogue? This will overwrite current products.')) return;
+    saveProducts(DEFAULT_PRODUCTS.map(normalize));
+    resetForm(true);
+    toast('Seed restored');
+  }
+
+  function clearAll(){
+    if(!confirm('Clear ALL products from this browser?')) return;
+    saveProducts([]);
+    resetForm(true);
+    toast('All products cleared');
+  }
+
+  function duplicateSeedOnTop(){
+    const current = state.products.map(normalize);
+    const merged = [...DEFAULT_PRODUCTS.map(normalize), ...current];
+    saveProducts(merged);
+    toast('Seed products added to top');
+  }
+
+  function sortFeatured(){
+    state.sort = 'featured';
+    renderAll();
+    toast('Sorted by featured rank');
+  }
+
+  function sortSport(){
+    state.sort = 'sport';
+    renderAll();
+    toast('Sorted by sport');
+  }
+
+  function updatePreviewFromForm(){
+    const name = els.name.value.trim();
+    const brand = els.brand.value.trim();
+    const sport = els.sport.value;
+    updatePreview(state.previewImage, name || 'Preview', brand, sport);
+  }
+
+  function wireEvents(){
+    els.productForm.addEventListener('submit', handleSubmit);
+    els.cancelEditBtn.addEventListener('click', () => resetForm());
+    els.resetBtn.addEventListener('click', () => resetForm());
+    els.seedBtn.addEventListener('click', seedReset);
+    els.exportBtn.addEventListener('click', exportJSON);
+    els.clearAllBtn.addEventListener('click', clearAll);
+    els.sortNameBtn.addEventListener('click', sortFeatured);
+    els.sortSportBtn.addEventListener('click', sortSport);
+    els.duplicateSeedBtn.addEventListener('click', duplicateSeedOnTop);
+    els.productList.addEventListener('click', handleListClick);
+
+    els.imageFile.addEventListener('change', () => {
+      const file = els.imageFile.files && els.imageFile.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.previewImage = String(reader.result || '');
+        updatePreview(state.previewImage, els.name.value.trim() || 'Preview', els.brand.value.trim(), els.sport.value);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    ['name','brand','sport'].forEach(id => {
+      $(id).addEventListener('input', updatePreviewFromForm);
+      $(id).addEventListener('change', updatePreviewFromForm);
+    });
+
+    els.importFile.addEventListener('change', async () => {
+      const file = els.importFile.files && els.importFile.files[0];
+      if(!file) return;
+      try{
+        await importJSON(file);
+      }catch(err){
+        alert(err.message || 'Unable to import JSON');
+      }finally{
+        els.importFile.value = '';
+      }
+    });
+
+    window.addEventListener('storage', e => {
+      if(e.key === STORAGE_PRODUCTS){
+        state.products = loadProducts();
+        renderAll();
+      }
+    });
+  }
+
+  seedIfEmpty();
+  renderAll();
+  updatePreview('', 'Preview', '', '');
+  wireEvents();
+})();
+</script>
+</body>
+</html>
