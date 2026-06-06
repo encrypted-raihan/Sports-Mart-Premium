@@ -994,150 +994,231 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
 
 
 
-/* =====================================
-   FULL PRODUCTS BANNER
-===================================== */
-
 .products-banner{
-    margin-top:2rem;
     position:relative;
     overflow:hidden;
 
-    border-radius:28px;
+    margin-top:2rem;
+    padding:2.2rem;
+
+    border-radius:32px;
 
     background:
-      radial-gradient(
-        circle at top right,
-        rgba(200,245,66,.12),
-        transparent 35%
-      ),
-
-      radial-gradient(
-        circle at bottom left,
-        rgba(232,49,10,.15),
-        transparent 40%
-      ),
-
-      linear-gradient(
-        135deg,
-        #0F141C,
-        #141C27
-      );
+        linear-gradient(
+            135deg,
+            rgba(16,22,31,.96),
+            rgba(25,34,48,.96)
+        );
 
     border:1px solid rgba(255,255,255,.08);
 
     box-shadow:
-      0 20px 60px rgba(0,0,0,.35);
+        0 25px 70px rgba(0,0,0,.35);
+
+    isolation:isolate;
 }
 
-.products-banner::before{
-    content:"SPORTS";
+.products-banner-bg{
     position:absolute;
-    right:-10px;
-    top:50%;
-    transform:translateY(-50%);
+    inset:0;
 
-    font-family:var(--font-head);
+    background:
+        radial-gradient(circle at 15% 50%, rgba(232,49,10,.18), transparent 30%),
+        radial-gradient(circle at 85% 50%, rgba(200,245,66,.15), transparent 30%);
 
-    font-size:clamp(6rem,12vw,12rem);
+    animation:bannerFloat 8s ease-in-out infinite alternate;
 
-    font-weight:900;
-
-    color:rgba(255,255,255,.03);
-
-    pointer-events:none;
+    z-index:-1;
 }
 
 .products-banner-content{
     display:flex;
     align-items:center;
     justify-content:space-between;
-
     gap:2rem;
-
-    padding:2rem;
 }
 
 .products-banner-tag{
-    display:inline-block;
+    display:inline-flex;
+    align-items:center;
 
-    margin-bottom:.8rem;
+    padding:.6rem 1rem;
+
+    border-radius:999px;
+
+    background:rgba(200,245,66,.1);
+    border:1px solid rgba(200,245,66,.2);
 
     color:var(--acid);
 
     font-family:var(--font-mono);
-
-    font-size:.65rem;
-
-    letter-spacing:.2em;
-
+    font-size:.62rem;
+    letter-spacing:.18em;
     text-transform:uppercase;
+
+    margin-bottom:1rem;
 }
 
 .products-banner h3{
-    margin:0 0 .6rem;
+    margin:0 0 .8rem;
 
     font-family:var(--font-head);
-
-    font-size:2.2rem;
-
-    font-weight:900;
-
+    font-size:clamp(2rem,4vw,4rem);
+    line-height:.9;
     text-transform:uppercase;
-
-    line-height:.95;
+    letter-spacing:-.03em;
 }
 
 .products-banner p{
+    max-width:700px;
     margin:0;
 
-    max-width:650px;
-
     color:var(--muted);
-
     line-height:1.8;
+    font-size:1rem;
 }
 
-.products-banner-btn{
-    flex:none;
+.products-banner-features{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.7rem;
 
-    display:inline-flex;
+    margin-top:1.5rem;
+}
 
-    align-items:center;
-
-    justify-content:center;
-
-    text-decoration:none;
-
-    min-width:220px;
-
-    padding:1rem 1.6rem;
+.products-banner-features span{
+    padding:.45rem .8rem;
 
     border-radius:999px;
 
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+
+    font-size:.75rem;
+    color:var(--text);
+}
+
+.products-banner-action{
+    flex-shrink:0;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.8rem;
+}
+
+.products-banner-btn{
+    position:relative;
+    overflow:hidden;
+
+    display:flex;
+    align-items:center;
+    gap:.8rem;
+
+    padding:1.2rem 2rem;
+
+    border-radius:999px;
+
+    text-decoration:none;
+
     background:linear-gradient(
-      135deg,
-      var(--acid),
-      #EAFB96
+        135deg,
+        var(--acid),
+        #EAFB96
     );
 
     color:#000;
 
     font-family:var(--font-head);
-
-    font-size:.9rem;
-
+    font-size:.95rem;
     font-weight:900;
-
-    letter-spacing:.12em;
-
+    letter-spacing:.15em;
     text-transform:uppercase;
 
-    transition:.25s;
+    box-shadow:
+        0 12px 35px rgba(200,245,66,.25);
+
+    transition:.3s;
+}
+
+.products-banner-btn::before{
+    content:"";
+
+    position:absolute;
+    top:0;
+    left:-120%;
+
+    width:70%;
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.8),
+        transparent
+    );
+
+    transform:skewX(-25deg);
+
+    animation:shine 3s infinite;
 }
 
 .products-banner-btn:hover{
-    transform:translateY(-3px);
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:
+        0 0 40px rgba(200,245,66,.4),
+        0 20px 50px rgba(200,245,66,.3);
+}
+
+.products-banner-btn:hover .arrow{
+    transform:translateX(6px);
+}
+
+.arrow{
+    transition:.3s;
+}
+
+.products-banner-action small{
+    color:var(--sub);
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:.65rem;
+}
+
+@keyframes shine{
+    from{
+        left:-120%;
+    }
+    to{
+        left:140%;
+    }
+}
+
+@keyframes bannerFloat{
+    from{
+        transform:translateY(-10px);
+    }
+    to{
+        transform:translateY(10px);
+    }
+}
+
+@media(max-width:900px){
+
+    .products-banner-content{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .products-banner-features{
+        justify-content:center;
+    }
+
+    .products-banner-btn{
+        width:100%;
+        justify-content:center;
+    }
 }
 
 
@@ -1180,7 +1261,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
     </ul>
     <div class="nav-actions">
       <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
-      <a class="nav-btn" href="products.html">View Products</a>
+      <a class="nav-btn" href="#shop">View Products</a>
       <a class="nav-btn wa" href="https://wa.me/918921373326?text=Hi%20Sports%20Mart%20Premium%2C%20I%20want%20to%20enquire%20about%20your%20products." target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.533 5.851L.057 23.63a.5.5 0 0 0 .613.613l5.779-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.692-.507-5.228-1.393l-.374-.214-3.891.994.994-3.891-.214-.374A9.966 9.966 0 0 1 2 12c0-5.514 4.486-10 10-10s10 4.486 10 10-4.486 10-10 10z"/></svg>
         Order Now
@@ -1312,28 +1393,54 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
 
   <div id="productsGrid" aria-live="polite"></div>
 
-<div class="products-banner" data-scroll="zoom-in">
+<div id="shop" div class="products-banner" data-scroll="zoom-in">
+    
+    <div class="products-banner-bg"></div>
+
     <div class="products-banner-content">
+
         <div class="products-banner-text">
+
             <span class="products-banner-tag">
-                FULL CATALOG
+                🔥 500+ PRODUCTS AVAILABLE
             </span>
 
             <h3>
-                Explore Our Complete Sports Collection
+                Discover Everything You Need<br>
+                For Every Sport
             </h3>
 
             <p>
-                Browse all products, premium equipment,
-                sportswear, footwear and accessories
-                in one dedicated shopping experience.
+                Premium sports equipment, professional footwear,
+                performance apparel, fitness essentials and accessories —
+                all in one destination.
             </p>
+
+            <div class="products-banner-features">
+                <span>🏏 Cricket</span>
+                <span>⚽ Football</span>
+                <span>🏸 Badminton</span>
+                <span>🏊 Swimming</span>
+                <span>🏋 Fitness</span>
+            </div>
+
         </div>
 
-        <a href="products.html" class="products-banner-btn">
-            View Full Products →
-        </a>
+        <div class="products-banner-action">
+
+            <a href="products.html" class="products-banner-btn">
+                <span>Explore Full Collection</span>
+                <span class="arrow">→</span>
+            </a>
+
+            <small>
+                Browse all categories & latest arrivals
+            </small>
+
+        </div>
+
     </div>
+
 </div>
 
 </section>
@@ -1397,7 +1504,7 @@ footer{position:relative;border-top:1px solid rgba(255,255,255,.06);background:r
   <div class="section-head container">
     <div data-scroll="fade-left">
       <div class="sh-eyebrow">// What customers say</div>
-      <h2 class="sh-title">Real<br><span class="alt">Reviews</span></h2>
+      <h2 class="sh-title"><span class="alt">Reviews</span></h2>
     </div>
     <div data-scroll="fade-right" style="text-align:right">
       <div class="sh-count">156 GOOGLE REVIEWS</div>
