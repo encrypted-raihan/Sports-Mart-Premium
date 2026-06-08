@@ -1,4 +1,4 @@
-# ads.txt — https://sportsmartpremium.in/ads.txt
+# ads.txt — https://sportsmartpremium.com/ads.txt
 # Sports Mart Premium does not currently serve programmatic ads.
 # This file is a placeholder to prevent unauthorized ad spoofing.
-# Contact: admin@sportsmartpremium.in
+# Contact: sportsmartktr@gmail.com
