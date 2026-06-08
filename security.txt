@@ -1,5 +1,5 @@
-# security.txt — https://sportsmartpremium.in/.well-known/security.txt
-Contact: mailto:admin@sportsmartpremium.in
+# security.txt — https://sportsmartpremium.com/.well-known/security.txt
+Contact: mailto:admin@sportsmartpremium.com
 Contact: https://wa.me/918921373326
 Preferred-Languages: en, ml
 Expires: 2027-12-31T00:00:00.000Z

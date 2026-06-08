@@ -47,7 +47,7 @@
 <meta name="description" content="Kottarakkara's No.1 sports store since 2014. Buy cricket bats, football boots, badminton rackets, fitness gear and sportswear. Visit us at Pulamon Junction or order via WhatsApp: +91 89213 73326." />
 <meta name="keywords" content="sports shop kottarakkara, cricket equipment kerala, football boots kollam, badminton racket kottarakkara, sports store kollam district, sportswear kerala" />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-<link rel="canonical" href="https://sportsmartpremium.in/" />
+<link rel="canonical" href="https://sportsmartpremium.com/" />
 <meta name="author" content="Sports Mart Premium" />
 <meta name="geo.region" content="IN-KL" />
 <meta name="geo.placename" content="Kottarakkara, Kerala, India" />
@@ -58,8 +58,8 @@
 <meta property="og:title" content="Sports Mart Premium — Kottarakkara's Best Sports Store" />
 <meta property="og:description" content="10+ years of trust. Cricket, football, badminton, fitness, sportswear. Order via WhatsApp or visit us at Pulamon Junction, Kottarakkara." />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://sportsmartpremium.in/" />
-<meta property="og:image" content="https://sportsmartpremium.in/images/og-home.jpg" />
+<meta property="og:url" content="https://sportsmartpremium.com/" />
+<meta property="og:image" content="https://sportsmartpremium.com/images/og-home.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Sports Mart Premium store front, Kottarakkara Kerala" />
@@ -70,7 +70,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Sports Mart Premium — Kottarakkara's Best Sports Store" />
 <meta name="twitter:description" content="Cricket, football, badminton, fitness gear and sportswear. Order via WhatsApp." />
-<meta name="twitter:image" content="https://sportsmartpremium.in/images/og-home.jpg" />
+<meta name="twitter:image" content="https://sportsmartpremium.com/images/og-home.jpg" />
 
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json" />
@@ -575,7 +575,7 @@ Each product page should link to:
 - Left side: "Sports Mart Premium" in Cormorant Garamond Bold, large
 - Sub: "Kottarakkara, Kerala | Est. 2014"
 - Right side: Sport emoji collage (🏏⚽🏸🏋♟️)
-- Bottom: "+91 89213 73326 | sportsmartpremium.in"
+- Bottom: "+91 89213 73326 | sportsmartpremium.com"
 - Dark accent bar at bottom: "#111111"
 - File: og-home.jpg (under 300KB)
 - Tool: Canva, Figma, or generate with sharp/node-canvas

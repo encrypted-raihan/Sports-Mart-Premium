@@ -1,5 +1,5 @@
 # robots.txt — Sports Mart Premium
-# https://sportsmartpremium.in/robots.txt
+# https://sportsmartpremium.com/robots.txt
 # Last updated: 2026-06
 
 User-agent: *
@@ -69,6 +69,6 @@ User-agent: ia_archiver
 Disallow: /
 
 # Sitemaps
-Sitemap: https://sportsmartpremium.in/sitemap.xml
-Sitemap: https://sportsmartpremium.in/sitemap-products.xml
-Sitemap: https://sportsmartpremium.in/sitemap-images.xml
+Sitemap: https://sportsmartpremium.com/sitemap.xml
+Sitemap: https://sportsmartpremium.com/sitemap-products.xml
+Sitemap: https://sportsmartpremium.com/sitemap-images.xml
