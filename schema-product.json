@@ -1,0 +1,133 @@
+<!--
+  PRODUCT PAGE SCHEMA TEMPLATE
+  Replace {{PLACEHOLDERS}} with actual product data.
+  Paste inside <head> on every product page.
+-->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Product",
+      "@id": "https://sportsmartpremium.in/products/{{PRODUCT_SLUG}}#product",
+      "name": "{{PRODUCT_NAME}}",
+      "description": "{{PRODUCT_DESCRIPTION}}",
+      "brand": {
+        "@type": "Brand",
+        "name": "{{BRAND_NAME}}"
+      },
+      "sku": "{{PRODUCT_SKU}}",
+      "mpn": "{{PRODUCT_MPN}}",
+      "category": "{{PRODUCT_CATEGORY}}",
+      "image": [
+        "https://sportsmartpremium.in/images/products/{{PRODUCT_SLUG}}-1.webp",
+        "https://sportsmartpremium.in/images/products/{{PRODUCT_SLUG}}-2.webp"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "url": "https://sportsmartpremium.in/products/{{PRODUCT_SLUG}}",
+        "priceCurrency": "INR",
+        "price": "{{PRICE}}",
+        "priceValidUntil": "2026-12-31",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": {
+          "@id": "https://sportsmartpremium.in/#business"
+        },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": "0",
+            "currency": "INR"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "IN",
+            "addressRegion": ["Kerala"]
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "businessDays": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+            },
+            "cutoffTime": "17:00:00",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 0,
+              "maxValue": 1,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 3,
+              "unitCode": "DAY"
+            }
+          }
+        }
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "{{RATING_VALUE}}",
+        "reviewCount": "{{REVIEW_COUNT}}",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://sportsmartpremium.in/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "{{SPORT_CATEGORY}}",
+          "item": "https://sportsmartpremium.in/{{SPORT_CATEGORY_SLUG}}.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "{{PRODUCT_NAME}}",
+          "item": "https://sportsmartpremium.in/products/{{PRODUCT_SLUG}}"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<!--
+  PRODUCT PAGE META TAG TEMPLATE
+  Formula for <title>: {{Product Name}} | {{Sport}} {{Category}} in Kottarakkara — Sports Mart Premium
+  Example: Professional Cricket Bat | Cricket Equipment in Kottarakkara — Sports Mart Premium
+
+  Formula for meta description:
+  "Buy {{Product Name}} at Sports Mart Premium, Kottarakkara. {{Key feature 1}}, {{key feature 2}}. Available in-store and via WhatsApp delivery across Kerala. ₹{{price}}."
+-->
+
+<!--
+  PRODUCT OPEN GRAPH TAGS TEMPLATE:
+  <meta property="og:title" content="{{Product Name}} — Sports Mart Premium Kottarakkara" />
+  <meta property="og:description" content="{{Product Description}}" />
+  <meta property="og:type" content="product" />
+  <meta property="og:url" content="https://sportsmartpremium.in/products/{{PRODUCT_SLUG}}" />
+  <meta property="og:image" content="https://sportsmartpremium.in/images/products/{{PRODUCT_SLUG}}-og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Sports Mart Premium" />
+  <meta property="product:price:amount" content="{{PRICE}}" />
+  <meta property="product:price:currency" content="INR" />
+
+  TWITTER CARD TAGS TEMPLATE:
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{Product Name}} — Sports Mart Premium" />
+  <meta name="twitter:description" content="{{Product Description}}" />
+  <meta name="twitter:image" content="https://sportsmartpremium.in/images/products/{{PRODUCT_SLUG}}-og.jpg" />
+-->

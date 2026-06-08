@@ -1,0 +1,38 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://sportsmartpremium.in/#organization",
+  "name": "Sports Mart Premium",
+  "alternateName": "Sports Mart Premium Sporting Wears",
+  "url": "https://sportsmartpremium.in/",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://sportsmartpremium.in/icons/icon-512.png",
+    "width": 512,
+    "height": 512
+  },
+  "description": "Kottarakkara's No.1 sports equipment and sportswear store since 2014. Premium cricket, football, badminton, basketball, fitness, swimming and chess equipment for Kerala athletes.",
+  "foundingDate": "2014",
+  "telephone": "+918921373326",
+  "email": "sportsmartpremium@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Pulamon Junction, Opp. Private Bus Stand, LIC Building",
+    "addressLocality": "Kottarakkara",
+    "addressRegion": "Kerala",
+    "postalCode": "691531",
+    "addressCountry": "IN"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+918921373326",
+    "contactType": "customer service",
+    "availableLanguage": ["English", "Malayalam"],
+    "areaServed": "IN"
+  },
+  "sameAs": [
+    "https://wa.me/918921373326",
+    "https://maps.google.com/?q=Sports+Mart+Premium+Kottarakkara"
+  ],
+  "numberOfEmployees": {"@type": "QuantitativeValue", "value": 5}
+}

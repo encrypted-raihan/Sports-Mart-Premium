@@ -1,0 +1,18 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://sportsmartpremium.in/#website",
+  "url": "https://sportsmartpremium.in/",
+  "name": "Sports Mart Premium",
+  "description": "Kottarakkara's No.1 sports equipment and sportswear store",
+  "inLanguage": "en-IN",
+  "publisher": {"@id": "https://sportsmartpremium.in/#organization"},
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://sportsmartpremium.in/products.html?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}

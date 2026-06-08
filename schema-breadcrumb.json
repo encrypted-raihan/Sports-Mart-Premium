@@ -1,0 +1,98 @@
+<!--
+  BREADCRUMB SCHEMA TEMPLATES FOR SPORTS MART PREMIUM
+  Copy the appropriate template for each page type.
+-->
+
+<!-- ===== HOMEPAGE ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Sports Mart Premium",
+      "item": "https://sportsmartpremium.in/"
+    }
+  ]
+}
+</script>
+
+<!-- ===== CATEGORY PAGE (e.g. Cricket Equipment) ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sportsmartpremium.in/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Cricket Equipment",
+      "item": "https://sportsmartpremium.in/cricket-equipment-kottarakkara.html"
+    }
+  ]
+}
+</script>
+
+<!-- ===== PRODUCT PAGE ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sportsmartpremium.in/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Cricket Equipment",
+      "item": "https://sportsmartpremium.in/cricket-equipment-kottarakkara.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Professional Cricket Bat",
+      "item": "https://sportsmartpremium.in/products/professional-cricket-bat"
+    }
+  ]
+}
+</script>
+
+<!-- ===== BLOG POST PAGE ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sportsmartpremium.in/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://sportsmartpremium.in/blog/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{POST TITLE}}",
+      "item": "https://sportsmartpremium.in/blog/{{POST_SLUG}}"
+    }
+  ]
+}
+</script>

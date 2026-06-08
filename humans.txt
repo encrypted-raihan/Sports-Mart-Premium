@@ -1,0 +1,13 @@
+/* humans.txt — https://sportsmartpremium.in/humans.txt */
+/* The humans behind Sports Mart Premium */
+
+/* BUSINESS */
+Name: Sports Mart Premium
+Location: Kottarakkara, Kerala, India
+Contact: +91 89213 73326
+Founded: 2014
+
+/* SITE */
+Built with: HTML, CSS, JavaScript
+Standards: HTML5, CSS3, JSON-LD, Schema.org
+Charset: UTF-8

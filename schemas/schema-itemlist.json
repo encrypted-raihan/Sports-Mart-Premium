@@ -1,0 +1,20 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Sports Equipment Categories at Sports Mart Premium",
+  "description": "All sports equipment categories available at Sports Mart Premium, Kottarakkara",
+  "url": "https://sportsmartpremium.in/products.html",
+  "numberOfItems": 10,
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Cricket Equipment", "url": "https://sportsmartpremium.in/cricket-equipment-kottarakkara.html"},
+    {"@type": "ListItem", "position": 2, "name": "Football Equipment", "url": "https://sportsmartpremium.in/football-equipment-kerala.html"},
+    {"@type": "ListItem", "position": 3, "name": "Badminton Equipment", "url": "https://sportsmartpremium.in/badminton-equipment-kollam.html"},
+    {"@type": "ListItem", "position": 4, "name": "Basketball Equipment", "url": "https://sportsmartpremium.in/basketball-equipment-kerala.html"},
+    {"@type": "ListItem", "position": 5, "name": "Fitness Equipment", "url": "https://sportsmartpremium.in/fitness-equipment-kottarakkara.html"},
+    {"@type": "ListItem", "position": 6, "name": "Swimming Equipment", "url": "https://sportsmartpremium.in/swimming-equipment-kerala.html"},
+    {"@type": "ListItem", "position": 7, "name": "Chess Equipment", "url": "https://sportsmartpremium.in/chess-equipment-kerala.html"},
+    {"@type": "ListItem", "position": 8, "name": "Sportswear", "url": "https://sportsmartpremium.in/sportswear-kerala.html"},
+    {"@type": "ListItem", "position": 9, "name": "All Products", "url": "https://sportsmartpremium.in/products.html"},
+    {"@type": "ListItem", "position": 10, "name": "Blog & Guides", "url": "https://sportsmartpremium.in/blog/"}
+  ]
+}
