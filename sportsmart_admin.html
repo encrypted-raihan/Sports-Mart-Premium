@@ -625,7 +625,7 @@ small.help{
   <div class="topbar-inner">
     <div class="brand">
       <h1>Sports Mart Premium</h1>
-      <p>Product Admin · localStorage catalogue</p>
+      <p>Product Admin · Firebase Firestore catalogue</p>
     </div>
     <div class="top-actions">
       <a class="btn ghost" href="./products.html" target="_blank" rel="noopener">Open Store</a>
@@ -739,7 +739,7 @@ small.help{
       <div class="field">
         <label for="imageFile">Product image</label>
         <input id="imageFile" type="file" accept="image/*" />
-        <small class="help">Choose a clean product photo. It will be stored in localStorage as a base64 image.</small>
+        <small class="help">Choose a clean product photo. It will be stored in Firebase Firestore as a base64 image.</small>
       </div>
 
       <div class="preview">
@@ -764,7 +764,7 @@ small.help{
     <div class="panel-head">
       <div>
         <h2>Catalogue</h2>
-        <p>Everything below is stored in localStorage. Add, edit, delete, export, or import without touching products.html.</p>
+        <p>Everything below is stored in Firebase Firestore. Add, edit, delete, export, or import without touching products.html.</p>
       </div>
       <div style="text-align:right;color:var(--sub);font-family:var(--font-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase" id="countMeta"></div>
     </div>
@@ -800,17 +800,33 @@ small.help{
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script>
-
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, getDocs, onSnapshot, writeBatch, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 if (!sessionStorage.getItem("sportsmart_admin")) {
     window.location.replace("admin_login.html");
 }
 
-(() => {
+(async () => {
   'use strict';
 
   const STORAGE_KEY = 'sportsmart_products_v1';
+
+  const firebaseConfig = {
+    "apiKey": "AIzaSyCE3iqTHqbD1dGVaMSWc8iih_RfBx9b_74",
+    "authDomain": "sportsmart-e5f5b.firebaseapp.com",
+    "projectId": "sportsmart-e5f5b",
+    "storageBucket": "sportsmart-e5f5b.firebasestorage.app",
+    "messagingSenderId": "962796065921",
+    "appId": "1:962796065921:web:35305c4d26f7c5c68ba980",
+    "measurementId": "G-9JH0J97VHE"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const productsCol = collection(db, 'products');
+  const metaRef = doc(db, 'meta', 'catalog');
+  let productsUnsubscribe = null;
 
   const DEFAULT_PRODUCTS = [
     { id:'cricket-bat-pro',        name:'Professional Cricket Bat',       sport:'Cricket',    category:'Equipment',   brand:'Kashmir Willow · Premium Range',  badge:'Bestseller',  badgeTone:'fire',  image:'', price:1299, oldPrice:1499, popular:99, featured:1,  year:2024, tags:['bat','kashmir willow','performance'] },
@@ -873,36 +889,62 @@ if (!sessionStorage.getItem("sportsmart_admin")) {
   };
 
   let state = {
-    products: loadProducts(),
+    products: [],
     editingId: null,
     previewImage: '',
     sort: 'featured',
   };
 
-  function seedIfEmpty(){
-    if(!localStorage.getItem(STORAGE_PRODUCTS)){
-      localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-    }
-  }
 
-  function loadProducts(){
-    seedIfEmpty();
-    try{
-      const raw = JSON.parse(localStorage.getItem(STORAGE_PRODUCTS) || '[]');
-      return Array.isArray(raw) ? raw : [];
-    }catch{
-      localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-      return [...DEFAULT_PRODUCTS];
-    }
-  }
+async function ensureSeeded(){
+  const metaSnap = await getDoc(metaRef);
+  if(metaSnap.exists() && metaSnap.data()?.seeded) return;
 
-  function saveProducts(products){
-    localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(products));
-    state.products = products;
-    renderAll();
+  const existing = await getDocs(productsCol);
+  if(existing.empty){
+    const batch = writeBatch(db);
+    DEFAULT_PRODUCTS.map(normalize).forEach(product => {
+      batch.set(doc(productsCol, product.id), product);
+    });
+    batch.set(metaRef, {
+      seeded: true,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+    await batch.commit();
+  }else{
+    await setDoc(metaRef, {
+      seeded: true,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
   }
+}
 
-  function makeId(prefix='prod'){
+async function loadProducts(){
+  await ensureSeeded();
+  const snap = await getDocs(productsCol);
+  return snap.docs.map(docSnap => normalize({ id: docSnap.id, ...docSnap.data() }));
+}
+
+async function saveProducts(products){
+  const normalized = products.map(normalize);
+  state.products = normalized;
+  renderAll();
+
+  const batch = writeBatch(db);
+  const existing = await getDocs(productsCol);
+  existing.forEach(docSnap => batch.delete(docSnap.ref));
+  normalized.forEach(product => {
+    batch.set(doc(productsCol, product.id), product);
+  });
+  batch.set(metaRef, {
+    seeded: true,
+    updatedAt: serverTimestamp(),
+  }, { merge: true });
+  await batch.commit();
+}
+
+function makeId(prefix='prod'){
+
     return `${prefix}-${Math.random().toString(36).slice(2,8)}-${Date.now().toString(36)}`;
   }
 
@@ -1174,8 +1216,8 @@ if (!sessionStorage.getItem("sportsmart_admin")) {
 
   function duplicateSeedOnTop(){
     const current = state.products.map(normalize);
-    const merged = [...DEFAULT_PRODUCTS.map(normalize), ...current];
-    saveProducts(merged);
+    const copies = DEFAULT_PRODUCTS.map(product => normalize({ ...product, id: makeId('seed') }));
+    saveProducts([...copies, ...current]);
     toast('Seed products added to top');
   }
 
@@ -1237,16 +1279,9 @@ if (!sessionStorage.getItem("sportsmart_admin")) {
         els.importFile.value = '';
       }
     });
-
-    window.addEventListener('storage', e => {
-      if(e.key === STORAGE_PRODUCTS){
-        state.products = loadProducts();
-        renderAll();
-      }
-    });
   }
 
-  seedIfEmpty();
+  state.products = await loadProducts();
   renderAll();
   updatePreview('', 'Preview', '', '');
   wireEvents();

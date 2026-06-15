@@ -1128,7 +1128,7 @@ button,input,select{font:inherit}
   <div class="container topbar-inner">
     <div class="brand">
       <h1>All Products</h1>
-      <p>Products saved in browser localStorage</p>
+      <p>Products synced from Firebase Firestore</p>
     </div>
     <div class="top-actions">
       <a class="btn ghost" href="index.html#shop">Home</a>
@@ -1142,7 +1142,7 @@ button,input,select{font:inherit}
     <div class="hero-panel">
       <div class="hero-kicker">// Complete catalogue</div>
       <h2>Browse Every <span class="alt">Product</span></h2>
-      <p>Search products, switch categories, and add items to cart. Everything stays saved in this browser, and order enquiries open directly in WhatsApp.</p>
+      <p>Search products, switch categories, and add items to cart. Products now load from Firebase Firestore, while cart items stay saved in this browser. Order enquiries open directly in WhatsApp.</p>
       <div class="hero-actions">
         <a href="#catalog" class="btn primary">Shop Now</a>
         <a href="https://wa.me/918921373326?text=Hi%20Sports%20Mart%20Premium%2C%20I%20want%20to%20enquire%20about%20your%20products." class="btn green" target="_blank" rel="noopener">WhatsApp</a>
@@ -1209,7 +1209,7 @@ button,input,select{font:inherit}
   <footer class="footer">
     <div>
       <div class="copy">© Sports Mart Premium</div>
-      <div class="note">Saved in localStorage</div>
+      <div class="note">Products from Firebase · Cart in browser</div>
     </div>
     <div class="footer-links">
       <a href="#catalog">Products</a>
@@ -1243,14 +1243,32 @@ button,input,select{font:inherit}
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script>
-(() => {
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, getDocs, onSnapshot, writeBatch, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+(async () => {
   'use strict';
 
   const PHONE = '918921373326';
   const STORAGE_PRODUCTS = 'sportsmart_products_v1';
   const STORAGE_CART = 'sportsmart_cart_v1';
   const formatINR = new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 });
+
+  const firebaseConfig = {
+    "apiKey": "AIzaSyCE3iqTHqbD1dGVaMSWc8iih_RfBx9b_74",
+    "authDomain": "sportsmart-e5f5b.firebaseapp.com",
+    "projectId": "sportsmart-e5f5b",
+    "storageBucket": "sportsmart-e5f5b.firebasestorage.app",
+    "messagingSenderId": "962796065921",
+    "appId": "1:962796065921:web:35305c4d26f7c5c68ba980",
+    "measurementId": "G-9JH0J97VHE"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const productsCol = collection(db, 'products');
+  const metaRef = doc(db, 'meta', 'catalog');
+  let productsUnsubscribe = null;
 
   const DEFAULT_PRODUCTS = [
     { id:'cricket-bat-pro',        name:'Professional Cricket Bat',       sport:'Cricket',    category:'Equipment',   brand:'Kashmir Willow · Premium Range',  badge:'Bestseller',  badgeTone:'fire',  price:1299, oldPrice:1499, popular:99, featured:1,  year:2024, tags:['bat','kashmir willow','performance'], image:'' },
@@ -1307,34 +1325,51 @@ button,input,select{font:inherit}
     sport: 'All',
     category: 'All',
     sort: 'featured',
-    products: loadProducts(),
+    products: [],
     cart: loadCart(),
   };
 
-  function seedIfEmpty(){
-    if(!localStorage.getItem(STORAGE_PRODUCTS)){
-      localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-    }
-  }
 
-  function loadProducts(){
-    seedIfEmpty();
-    try{
-      const raw = JSON.parse(localStorage.getItem(STORAGE_PRODUCTS) || '[]');
-      return Array.isArray(raw) ? raw : [];
-    }catch{
-      localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-      return [...DEFAULT_PRODUCTS];
-    }
-  }
+async function ensureSeeded(){
+  const metaSnap = await getDoc(metaRef);
+  if(metaSnap.exists() && metaSnap.data()?.seeded) return;
 
-  function saveProducts(products){
-    localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(products));
-    state.products = products;
+  const existing = await getDocs(productsCol);
+  if(existing.empty){
+    const batch = writeBatch(db);
+    DEFAULT_PRODUCTS.map(normalize).forEach(product => {
+      batch.set(doc(productsCol, product.id), product);
+    });
+    batch.set(metaRef, {
+      seeded: true,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+    await batch.commit();
+  }else{
+    await setDoc(metaRef, {
+      seeded: true,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+  }
+}
+
+async function initProducts(){
+  await ensureSeeded();
+  const snap = await getDocs(productsCol);
+  state.products = snap.docs.map(docSnap => normalize({ id: docSnap.id, ...docSnap.data() }));
+  renderAll();
+
+  if(productsUnsubscribe) productsUnsubscribe();
+  productsUnsubscribe = onSnapshot(productsCol, liveSnap => {
+    state.products = liveSnap.docs.map(docSnap => normalize({ id: docSnap.id, ...docSnap.data() }));
     renderAll();
-  }
+  }, err => {
+    console.error('Firestore listener failed:', err);
+  });
+}
 
-  function loadCart(){
+function loadCart(){
+
     try{
       const raw = JSON.parse(localStorage.getItem(STORAGE_CART) || '[]');
       return Array.isArray(raw) ? raw : [];
@@ -1754,12 +1789,7 @@ button,input,select{font:inherit}
     window.addEventListener('scroll', () => {
       els.backTop.classList.toggle('show', window.scrollY > 500);
     });
-
     window.addEventListener('storage', e => {
-      if(e.key === STORAGE_PRODUCTS){
-        state.products = loadProducts();
-        renderAll();
-      }
       if(e.key === STORAGE_CART){
         state.cart = loadCart();
         renderCart();
@@ -1771,8 +1801,7 @@ button,input,select{font:inherit}
     });
   }
 
-  seedIfEmpty();
-  renderAll();
+  await initProducts();
   wireEvents();
 })();
 </script>
