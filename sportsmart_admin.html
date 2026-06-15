@@ -619,13 +619,17 @@ small.help{
 }
 
 </style>
+
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore-compat.js"></script>
+
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand">
       <h1>Sports Mart Premium</h1>
-      <p>Product Admin · Firebase Firestore catalogue</p>
+      <p>Product Admin · Firebase catalogue</p>
     </div>
     <div class="top-actions">
       <a class="btn ghost" href="./products.html" target="_blank" rel="noopener">Open Store</a>
@@ -739,7 +743,7 @@ small.help{
       <div class="field">
         <label for="imageFile">Product image</label>
         <input id="imageFile" type="file" accept="image/*" />
-        <small class="help">Choose a clean product photo. It will be stored in Firebase Firestore as a base64 image.</small>
+        <small class="help">Choose a clean product photo. It will be stored in Firebase as a base64 image.</small>
       </div>
 
       <div class="preview">
@@ -764,7 +768,7 @@ small.help{
     <div class="panel-head">
       <div>
         <h2>Catalogue</h2>
-        <p>Everything below is stored in Firebase Firestore. Add, edit, delete, export, or import without touching products.html.</p>
+        <p>Everything below is stored in Firebase. Add, edit, delete, export, or import without touching products.html.</p>
       </div>
       <div style="text-align:right;color:var(--sub);font-family:var(--font-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase" id="countMeta"></div>
     </div>
@@ -800,33 +804,35 @@ small.help{
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, getDocs, onSnapshot, writeBatch, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+<script>
 
-if (!sessionStorage.getItem("sportsmart_admin")) {
-    window.location.replace("admin_login.html");
-}
-
-(async () => {
+(() => {
   'use strict';
 
+  if (!sessionStorage.getItem('sportsmart_admin')) {
+    window.location.replace('admin_login.html');
+    return;
+  }
+
   const STORAGE_KEY = 'sportsmart_products_v1';
+  const formatINR = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
 
   const firebaseConfig = {
-    "apiKey": "AIzaSyCE3iqTHqbD1dGVaMSWc8iih_RfBx9b_74",
-    "authDomain": "sportsmart-e5f5b.firebaseapp.com",
-    "projectId": "sportsmart-e5f5b",
-    "storageBucket": "sportsmart-e5f5b.firebasestorage.app",
-    "messagingSenderId": "962796065921",
-    "appId": "1:962796065921:web:35305c4d26f7c5c68ba980",
-    "measurementId": "G-9JH0J97VHE"
+    apiKey: "AIzaSyCE3iqTHqbD1dGVaMSWc8iih_RfBx9b_74",
+    authDomain: "sportsmart-e5f5b.firebaseapp.com",
+    projectId: "sportsmart-e5f5b",
+    storageBucket: "sportsmart-e5f5b.firebasestorage.app",
+    messagingSenderId: "962796065921",
+    appId: "1:962796065921:web:35305c4d26f7c5c68ba980",
+    measurementId: "G-9JH0J97VHE"
   };
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const productsCol = collection(db, 'products');
-  const metaRef = doc(db, 'meta', 'catalog');
-  let productsUnsubscribe = null;
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.firestore();
+  const productsCol = db.collection('products');
+  const metaRef = db.collection('meta').doc('catalog');
 
   const DEFAULT_PRODUCTS = [
     { id:'cricket-bat-pro',        name:'Professional Cricket Bat',       sport:'Cricket',    category:'Equipment',   brand:'Kashmir Willow · Premium Range',  badge:'Bestseller',  badgeTone:'fire',  image:'', price:1299, oldPrice:1499, popular:99, featured:1,  year:2024, tags:['bat','kashmir willow','performance'] },
@@ -842,13 +848,12 @@ if (!sessionStorage.getItem("sportsmart_admin")) {
     { id:'tracksuit-pro',          name:'Performance Tracksuit',          sport:'Sportswear', category:'Apparel',     brand:'Sportswear · Warmup Series',      badge:'Popular',     badgeTone:'fire',  image:'', price:1199, oldPrice:1399, popular:88, featured:10, year:2025, tags:['tracksuit','warmup','apparel'] },
     { id:'swim-goggles-pro',       name:'Swim Goggles — Pro Lens',        sport:'Swimming',   category:'Accessories', brand:'Swimming · Aquatic Range',        badge:'Fresh',       badgeTone:'green', image:'', price:399,  oldPrice:499,  popular:76, featured:7,  year:2025, tags:['goggles','swimming','accessories'] },
     { id:'chess-set-premium',      name:'Premium Chess Set',              sport:'Chess',      category:'Accessories', brand:'Chess · Elite Board',             badge:'Classic',     badgeTone:'gold',  image:'', price:649,  oldPrice:799,  popular:72, featured:9,  year:2023, tags:['board','pieces','chess'] },
-  ];
-
-  const STORAGE_PRODUCTS = STORAGE_KEY;
+  ];;
 
   const $ = (id) => document.getElementById(id);
-
   const els = {
+    formTitle: $('formTitle'),
+    resetBtn: $('resetBtn'),
     productForm: $('productForm'),
     editId: $('editId'),
     name: $('name'),
@@ -868,424 +873,555 @@ if (!sessionStorage.getItem("sportsmart_admin")) {
     previewFallback: $('previewFallback'),
     previewName: $('previewName'),
     previewInfo: $('previewInfo'),
-    productList: $('productList'),
+    saveBtn: $('saveBtn'),
+    cancelEditBtn: $('cancelEditBtn'),
     countMeta: $('countMeta'),
     statProducts: $('statProducts'),
     statSports: $('statSports'),
     statImages: $('statImages'),
     statFeatured: $('statFeatured'),
-    toastWrap: $('toastWrap'),
-    formTitle: $('formTitle'),
-    saveBtn: $('saveBtn'),
-    cancelEditBtn: $('cancelEditBtn'),
-    resetBtn: $('resetBtn'),
+    sortNameBtn: $('sortNameBtn'),
+    sortSportBtn: $('sortSportBtn'),
+    duplicateSeedBtn: $('duplicateSeedBtn'),
+    productList: $('productList'),
     seedBtn: $('seedBtn'),
     exportBtn: $('exportBtn'),
     importFile: $('importFile'),
     clearAllBtn: $('clearAllBtn'),
-    sortNameBtn: $('sortNameBtn'),
-    sortSportBtn: $('sortSportBtn'),
-    duplicateSeedBtn: $('duplicateSeedBtn'),
+    toastWrap: $('toastWrap'),
   };
 
-  let state = {
+  const state = {
     products: [],
     editingId: null,
     previewImage: '',
     sort: 'featured',
+    ready: false,
   };
 
+  let unsubscribeProducts = null;
+  let initDone = false;
 
-async function ensureSeeded(){
-  const metaSnap = await getDoc(metaRef);
-  if(metaSnap.exists() && metaSnap.data()?.seeded) return;
-
-  const existing = await getDocs(productsCol);
-  if(existing.empty){
-    const batch = writeBatch(db);
-    DEFAULT_PRODUCTS.map(normalize).forEach(product => {
-      batch.set(doc(productsCol, product.id), product);
-    });
-    batch.set(metaRef, {
-      seeded: true,
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
-    await batch.commit();
-  }else{
-    await setDoc(metaRef, {
-      seeded: true,
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
-  }
-}
-
-async function loadProducts(){
-  await ensureSeeded();
-  const snap = await getDocs(productsCol);
-  return snap.docs.map(docSnap => normalize({ id: docSnap.id, ...docSnap.data() }));
-}
-
-async function saveProducts(products){
-  const normalized = products.map(normalize);
-  state.products = normalized;
-  renderAll();
-
-  const batch = writeBatch(db);
-  const existing = await getDocs(productsCol);
-  existing.forEach(docSnap => batch.delete(docSnap.ref));
-  normalized.forEach(product => {
-    batch.set(doc(productsCol, product.id), product);
-  });
-  batch.set(metaRef, {
-    seeded: true,
-    updatedAt: serverTimestamp(),
-  }, { merge: true });
-  await batch.commit();
-}
-
-function makeId(prefix='prod'){
-
-    return `${prefix}-${Math.random().toString(36).slice(2,8)}-${Date.now().toString(36)}`;
+  function safeText(v) {
+    return String(v ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
   }
 
-  function normalize(product){
+  function money(v) {
+    return formatINR.format(Number(v || 0));
+  }
+
+  function makeId(prefix = 'prod') {
+    return `${prefix}-${Math.random().toString(36).slice(2, 8)}-${Date.now().toString(36)}`;
+  }
+
+  function normalizeProduct(product) {
+    const tags = Array.isArray(product?.tags)
+      ? product.tags
+      : String(product?.tags || '')
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean);
+
+    const price = Number(product?.price || 0);
+    const oldPrice = Number(product?.oldPrice || 0);
+    const featured = Number(product?.featured || 999);
+    const updatedAt = Number(product?.updatedAt || product?.createdAt || Date.now());
+    const createdAt = Number(product?.createdAt || updatedAt);
+
     return {
-      id: product.id || makeId('prod'),
-      name: product.name || 'Untitled Product',
-      sport: product.sport || 'Sportswear',
-      category: product.category || 'General',
-      brand: product.brand || '',
-      badge: product.badge || '',
-      badgeTone: product.badgeTone || 'fire',
-      image: product.image || '',
-      price: Number(product.price || 0),
-      oldPrice: Number(product.oldPrice || 0),
-      popular: Number(product.popular || 0),
-      featured: Number(product.featured || 999),
-      year: Number(product.year || new Date().getFullYear()),
-      tags: Array.isArray(product.tags) ? product.tags : String(product.tags || '').split(',').map(s => s.trim()).filter(Boolean)
+      id: String(product?.id || makeId('prod')),
+      name: String(product?.name || 'Untitled Product'),
+      sport: String(product?.sport || 'Sportswear'),
+      category: String(product?.category || 'General'),
+      brand: String(product?.brand || ''),
+      badge: String(product?.badge || ''),
+      badgeTone: ['fire', 'gold', 'green'].includes(product?.badgeTone) ? product.badgeTone : 'fire',
+      image: String(product?.image || ''),
+      price,
+      oldPrice,
+      popular: Number(product?.popular || 0),
+      featured,
+      year: Number(product?.year || new Date().getFullYear()),
+      tags,
+      updatedAt,
+      createdAt,
     };
   }
 
-  function safeText(v){
-    return String(v ?? '')
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'","&#39;");
+  function loadLegacyCatalog() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      if (!Array.isArray(raw)) return [];
+      return raw.map(normalizeProduct);
+    } catch {
+      return [];
+    }
   }
 
-  function toast(message){
-    const el = document.createElement('div');
-    el.className = 'toast';
-    el.innerHTML = `<div class="b"></div><div class="t">${safeText(message)}</div>`;
-    els.toastWrap.appendChild(el);
+  function showToast(message) {
+    if (!els.toastWrap) return;
+    const node = document.createElement('div');
+    node.className = 'toast';
+    node.innerHTML = '<div class="b"></div><div class="t"></div>';
+    node.querySelector('.t').textContent = message;
+    els.toastWrap.appendChild(node);
     setTimeout(() => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(10px)';
-      setTimeout(() => el.remove(), 220);
-    }, 2200);
+      node.style.opacity = '0';
+      node.style.transform = 'translateY(12px)';
+      setTimeout(() => node.remove(), 220);
+    }, 2400);
   }
 
-  function updatePreview(image, name, brand, sport){
-    els.previewName.textContent = name || 'Preview';
-    els.previewInfo.textContent = [brand, sport].filter(Boolean).join(' · ') || 'No image selected yet.';
-    els.previewBox.innerHTML = image
-      ? `<img src="${safeText(image)}" alt="${safeText(name || 'Product preview')}">`
-      : `<div class="preview-fallback">${safeText((name || 'P').slice(0,1).toUpperCase())}</div>`;
+  function renderPreview() {
+    const name = els.name?.value?.trim() || 'Preview';
+    const sport = els.sport?.value || 'Sport';
+    const category = els.category?.value || 'Category';
+    const brand = els.brand?.value?.trim() || 'Brand';
+    const price = Number(els.price?.value || 0);
+    const oldPrice = Number(els.oldPrice?.value || 0);
+    const year = Number(els.year?.value || new Date().getFullYear());
+    const image = state.previewImage || '';
+    const fallback = (name || 'P').slice(0, 1).toUpperCase();
+
+    if (els.previewBox) {
+      els.previewBox.innerHTML = image
+        ? `<img src="${safeText(image)}" alt="${safeText(name)}" />`
+        : `<div class="preview-fallback">${safeText(fallback)}</div>`;
+    }
+    if (els.previewFallback) {
+      els.previewFallback.textContent = fallback;
+      els.previewFallback.style.display = image ? 'none' : 'block';
+    }
+    if (els.previewName) els.previewName.textContent = name;
+    if (els.previewInfo) {
+      const bits = [
+        `${sport}`,
+        `${category}`,
+        `${brand}`,
+        price ? `₹${price}` : '',
+        oldPrice ? `Old ₹${oldPrice}` : '',
+        String(year)
+      ].filter(Boolean);
+      els.previewInfo.textContent = bits.join(' · ');
+    }
   }
 
-  function resetForm(keepMessage = false){
+  function resetForm(keepPreview = false) {
+    els.productForm?.reset();
+    if (els.editId) els.editId.value = '';
     state.editingId = null;
-    els.editId.value = '';
-    els.formTitle.textContent = 'Add Product';
-    els.saveBtn.textContent = 'Save Product';
-    els.productForm.reset();
-    els.badgeTone.value = 'fire';
-    els.year.value = new Date().getFullYear();
-    els.popular.value = 0;
-    els.featured.value = 999;
-    state.previewImage = '';
-    updatePreview('', 'Preview', '', '');
-    if(!keepMessage) toast('Ready for a new product');
+    if (!keepPreview) state.previewImage = '';
+    if (els.formTitle) els.formTitle.textContent = 'Add Product';
+    if (els.saveBtn) els.saveBtn.textContent = 'Save Product';
+    if (els.cancelEditBtn) els.cancelEditBtn.style.display = 'none';
+    if (els.year && !els.year.value) els.year.value = String(new Date().getFullYear());
+    renderPreview();
   }
 
-  function fillForm(product){
-    const p = normalize(product);
-    state.editingId = p.id;
-    els.editId.value = p.id;
-    els.formTitle.textContent = 'Edit Product';
-    els.saveBtn.textContent = 'Update Product';
-    els.name.value = p.name;
-    els.sport.value = p.sport;
-    els.category.value = p.category;
-    els.brand.value = p.brand;
-    els.price.value = p.price;
-    els.oldPrice.value = p.oldPrice || '';
-    els.year.value = p.year || new Date().getFullYear();
-    els.badge.value = p.badge;
-    els.badgeTone.value = p.badgeTone || 'fire';
-    els.popular.value = p.popular || 0;
-    els.featured.value = p.featured || 999;
-    els.tags.value = (p.tags || []).join(', ');
-    state.previewImage = p.image || '';
-    updatePreview(p.image || '', p.name, p.brand, p.sport);
-    window.scrollTo({ top:0, behavior:'smooth' });
+  function fillForm(product) {
+    if (!product) return;
+    state.editingId = product.id;
+    if (els.editId) els.editId.value = product.id;
+    if (els.name) els.name.value = product.name || '';
+    if (els.sport) els.sport.value = product.sport || 'Cricket';
+    if (els.category) els.category.value = product.category || 'Equipment';
+    if (els.brand) els.brand.value = product.brand || '';
+    if (els.price) els.price.value = product.price ?? '';
+    if (els.oldPrice) els.oldPrice.value = product.oldPrice ?? '';
+    if (els.year) els.year.value = product.year ?? new Date().getFullYear();
+    if (els.badge) els.badge.value = product.badge || '';
+    if (els.badgeTone) els.badgeTone.value = ['fire', 'gold', 'green'].includes(product.badgeTone) ? product.badgeTone : 'fire';
+    if (els.popular) els.popular.value = product.popular ?? '';
+    if (els.featured) els.featured.value = product.featured ?? '';
+    if (els.tags) els.tags.value = Array.isArray(product.tags) ? product.tags.join(', ') : (product.tags || '');
+    state.previewImage = product.image || '';
+    if (els.formTitle) els.formTitle.textContent = 'Edit Product';
+    if (els.saveBtn) els.saveBtn.textContent = 'Update Product';
+    if (els.cancelEditBtn) els.cancelEditBtn.style.display = 'inline-flex';
+    renderPreview();
   }
 
-  function renderAll(){
-    const products = state.products.map(normalize);
-    const sorted = sortCatalog(products, state.sort);
-    const count = products.length;
-    const sports = new Set(products.map(p => p.sport));
+  function collectFormProduct() {
+    const current = state.products.find(p => p.id === state.editingId) || null;
+    const id = current?.id || String(els.editId?.value || '').trim() || makeId('prod');
+    const tags = String(els.tags?.value || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    return normalizeProduct({
+      id,
+      name: els.name?.value.trim() || 'Untitled Product',
+      sport: els.sport?.value || 'Sportswear',
+      category: els.category?.value || 'General',
+      brand: els.brand?.value.trim() || '',
+      badge: els.badge?.value.trim() || '',
+      badgeTone: els.badgeTone?.value || 'fire',
+      image: state.previewImage || current?.image || '',
+      price: els.price?.value,
+      oldPrice: els.oldPrice?.value,
+      year: els.year?.value,
+      popular: els.popular?.value,
+      featured: els.featured?.value,
+      tags,
+      createdAt: current?.createdAt || Date.now(),
+      updatedAt: Date.now(),
+    });
+  }
+
+  async function upsertProducts(products, { merge = true } = {}) {
+    const normalized = products.map(normalizeProduct);
+    const batch = db.batch();
+    normalized.forEach(product => {
+      const ref = productsCol.doc(product.id);
+      if (merge) {
+        batch.set(ref, product, { merge: true });
+      } else {
+        batch.set(ref, product);
+      }
+    });
+    await batch.commit();
+    return normalized;
+  }
+
+  async function ensureCatalogSeeded() {
+    const [metaSnap, catalogSnap] = await Promise.all([
+      metaRef.get(),
+      productsCol.get(),
+    ]);
+
+    if (!catalogSnap.empty) {
+      if (!metaSnap.exists || !metaSnap.data()?.initialized) {
+        await metaRef.set({
+          initialized: true,
+          seededAt: Date.now(),
+          seedSource: 'existing',
+          count: catalogSnap.size,
+        }, { merge: true });
+      }
+      return;
+    }
+
+    if (metaSnap.exists && metaSnap.data()?.initialized) {
+      return;
+    }
+
+    const legacy = loadLegacyCatalog();
+    const seedSource = legacy.length ? legacy : DEFAULT_PRODUCTS;
+    await upsertProducts(seedSource, { merge: true });
+    await metaRef.set({
+      initialized: true,
+      seededAt: Date.now(),
+      seedSource: legacy.length ? 'legacy-localstorage' : 'default-seed',
+      count: seedSource.length,
+    }, { merge: true });
+  }
+
+  function sortProducts(list) {
+    const items = [...list];
+    switch (state.sort) {
+      case 'name':
+        return items.sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+      case 'sport':
+        return items.sort((a, b) => String(a.sport || '').localeCompare(String(b.sport || '')) || String(a.name || '').localeCompare(String(b.name || '')));
+      case 'featured':
+      default:
+        return items.sort((a, b) => Number(a.featured || 999) - Number(b.featured || 999) || String(a.name || '').localeCompare(String(b.name || '')));
+    }
+  }
+
+  function renderPreviewFromCurrent() {
+    renderPreview();
+  }
+
+  function renderStats() {
+    const products = state.products;
+    const sports = new Set(products.map(p => p.sport).filter(Boolean)).size;
     const images = products.filter(p => !!p.image).length;
-    const featured = products.filter(p => Number(p.featured || 999) < 999).length;
+    const featured = products.filter(p => Number(p.featured || 999) <= 10).length;
 
-    els.countMeta.textContent = `${count} products`;
-    els.statProducts.textContent = String(count);
-    els.statSports.textContent = String(sports.size);
-    els.statImages.textContent = String(images);
-    els.statFeatured.textContent = String(featured);
+    if (els.statProducts) els.statProducts.textContent = String(products.length);
+    if (els.statSports) els.statSports.textContent = String(sports);
+    if (els.statImages) els.statImages.textContent = String(images);
+    if (els.statFeatured) els.statFeatured.textContent = String(featured);
+    if (els.countMeta) {
+      els.countMeta.textContent = `${products.length} products · Firebase sync`;
+    }
+  }
 
-    if(!sorted.length){
+  function renderList() {
+    if (!els.productList) return;
+    const items = sortProducts(state.products);
+
+    if (!items.length) {
       els.productList.innerHTML = `
         <div class="empty">
           <h3>No products yet</h3>
-          <p>Add your first product using the form on the left.</p>
+          <p>Add a new product or use the Seed button to restore the default catalogue.</p>
         </div>
       `;
       return;
     }
 
-    els.productList.innerHTML = sorted.map(renderItem).join('');
-  }
-
-  function sortCatalog(list, sort){
-    const copy = [...list];
-    switch(sort){
-      case 'sport':
-        copy.sort((a,b) => a.sport.localeCompare(b.sport) || a.name.localeCompare(b.name));
-        break;
-      case 'featured':
-      default:
-        copy.sort((a,b) => (a.featured || 999) - (b.featured || 999) || a.name.localeCompare(b.name));
-        break;
-    }
-    return copy;
-  }
-
-  function renderItem(p){
-    const fallback = safeText((p.name || 'P').slice(0,1).toUpperCase());
-    const tags = (p.tags || []).slice(0,4).map(t => `<span class="meta" style="display:inline-flex;align-items:center;padding:.25rem .45rem;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.025);margin:.15rem .25rem .15rem 0">${safeText(t)}</span>`).join('');
-    return `
-      <article class="item" data-item-id="${safeText(p.id)}">
-        <div class="thumb">
-          ${p.image ? `<img src="${safeText(p.image)}" alt="${safeText(p.name)}">` : `<div class="fallback">${fallback}</div>`}
-        </div>
-        <div>
-          <h3>${safeText(p.name)}</h3>
-          <div class="meta">${safeText(p.sport)} · ${safeText(p.category)} · ${safeText(p.brand || 'No brand')}</div>
-          <div class="desc">
-            ${safeText(p.badge || 'No badge')} · ₹${safeText(p.price)}${p.oldPrice ? ` · Old ₹${safeText(p.oldPrice)}` : ''} · Rank ${safeText(p.featured || 999)} · Year ${safeText(p.year || '')}
+    els.productList.innerHTML = items.map(product => {
+      const image = product.image || '';
+      const fallback = safeText((product.name || 'P').slice(0, 1));
+      const badge = product.badge ? `${safeText(product.badge)}${product.badgeTone ? ` · ${safeText(product.badgeTone)}` : ''}` : 'No badge';
+      const tags = Array.isArray(product.tags) ? product.tags.join(', ') : '';
+      return `
+        <article class="item" data-id="${safeText(product.id)}">
+          <div class="thumb">
+            ${image ? `<img src="${safeText(image)}" alt="${safeText(product.name)}" />` : `<div class="fallback">${fallback}</div>`}
           </div>
-          <div style="margin-top:.55rem">${tags}</div>
-        </div>
-        <div class="actions">
-          <button class="pill good" type="button" data-edit="${safeText(p.id)}">Edit</button>
-          <button class="pill" type="button" data-dup="${safeText(p.id)}">Duplicate</button>
-          <button class="pill danger" type="button" data-del="${safeText(p.id)}">Delete</button>
-        </div>
-      </article>
-    `;
+          <div>
+            <h3>${safeText(product.name)}</h3>
+            <div class="meta">${safeText(product.sport)} · ${safeText(product.category)} · ${safeText(product.brand || '')}</div>
+            <div class="meta" style="margin-top:.28rem">${badge} · Featured ${Number(product.featured || 0)} · Popular ${Number(product.popular || 0)} · ${Number(product.year || new Date().getFullYear())}</div>
+            <p class="desc">
+              Price: ${money(product.price)}
+              ${Number(product.oldPrice || 0) > 0 ? ` · Old price: ${money(product.oldPrice)}` : ''}
+              ${tags ? ` · Tags: ${safeText(tags)}` : ''}
+            </p>
+          </div>
+          <div class="actions">
+            <button class="pill good" type="button" data-action="edit">Edit</button>
+            <button class="pill danger" type="button" data-action="delete">Delete</button>
+          </div>
+        </article>
+      `;
+    }).join('');
   }
 
-  function handleSubmit(event){
-    event.preventDefault();
-    const existing = state.editingId ? state.products.find(p => p.id === state.editingId) : null;
-    const file = els.imageFile.files && els.imageFile.files[0];
-    const proceedWithImage = (image) => {
-      const product = normalize({
-        id: existing ? existing.id : makeId('prod'),
-        name: els.name.value.trim(),
-        sport: els.sport.value,
-        category: els.category.value,
-        brand: els.brand.value.trim(),
-        badge: els.badge.value.trim(),
-        badgeTone: els.badgeTone.value,
-        image: image || existing?.image || '',
-        price: Number(els.price.value || 0),
-        oldPrice: Number(els.oldPrice.value || 0),
-        popular: Number(els.popular.value || 0),
-        featured: Number(els.featured.value || 999),
-        year: Number(els.year.value || new Date().getFullYear()),
-        tags: els.tags.value.split(',').map(s => s.trim()).filter(Boolean),
-      });
-
-      const products = [...state.products];
-      if(existing){
-        const idx = products.findIndex(p => p.id === existing.id);
-        if(idx >= 0) products[idx] = product;
-      }else{
-        products.unshift(product);
-      }
-      saveProducts(products);
-      toast(existing ? 'Product updated' : 'Product added');
-      resetForm(true);
-      updatePreview('', 'Preview', '', '');
-    };
-
-    if(file){
-      const reader = new FileReader();
-      reader.onload = () => proceedWithImage(String(reader.result || ''));
-      reader.readAsDataURL(file);
-    }else{
-      proceedWithImage('');
-    }
+  function renderAll() {
+    renderStats();
+    renderList();
+    renderPreviewFromCurrent();
   }
 
-  function handleListClick(event){
-    const editId = event.target.closest('[data-edit]')?.getAttribute('data-edit');
-    const dupId = event.target.closest('[data-dup]')?.getAttribute('data-dup');
-    const delId = event.target.closest('[data-del]')?.getAttribute('data-del');
-
-    if(editId){
-      const product = state.products.find(p => p.id === editId);
-      if(product) fillForm(product);
-    }
-
-    if(dupId){
-      const product = state.products.find(p => p.id === dupId);
-      if(product){
-        const copy = normalize({
-          ...product,
-          id: makeId('dup'),
-          name: `${product.name} Copy`,
-          featured: Number(product.featured || 999) + 1,
-        });
-        saveProducts([copy, ...state.products]);
-        toast('Product duplicated');
-      }
-    }
-
-    if(delId){
-      const product = state.products.find(p => p.id === delId);
-      if(!product) return;
-      if(!confirm(`Delete "${product.name}"?`)) return;
-      saveProducts(state.products.filter(p => p.id !== delId));
-      toast('Product deleted');
-      if(state.editingId === delId) resetForm(true);
-    }
+  function getCurrentImportList(payload) {
+    if (Array.isArray(payload)) return payload;
+    if (payload && Array.isArray(payload.products)) return payload.products;
+    return [];
   }
 
-  function exportJSON(){
-    const data = JSON.stringify(state.products, null, 2);
-    const blob = new Blob([data], { type:'application/json' });
+  async function saveCurrentProduct() {
+    const product = collectFormProduct();
+    await upsertProducts([product], { merge: true });
+    if (els.editId) els.editId.value = product.id;
+    state.editingId = product.id;
+    state.previewImage = product.image || '';
+    showToast('Product saved to Firebase');
+  }
+
+  async function deleteProduct(id) {
+    await productsCol.doc(id).delete();
+    if (state.editingId === id) resetForm();
+    showToast('Product deleted');
+  }
+
+  function editProduct(id) {
+    const product = state.products.find(p => p.id === id);
+    if (!product) return;
+    fillForm(product);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function importCatalogFile(file) {
+    const text = await file.text();
+    let parsed = null;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      showToast('Invalid JSON file');
+      return;
+    }
+    const list = getCurrentImportList(parsed).map(normalizeProduct);
+    if (!list.length) {
+      showToast('No products found in that file');
+      return;
+    }
+    await upsertProducts(list, { merge: true });
+    showToast(`Imported ${list.length} products`);
+  }
+
+  async function exportCatalog() {
+    const payload = JSON.stringify(state.products, null, 2);
+    const blob = new Blob([payload], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'sportsmart-products.json';
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
-    toast('Exported JSON');
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('Catalog exported');
   }
 
-  async function importJSON(file){
-    const text = await file.text();
-    const parsed = JSON.parse(text);
-    const incoming = Array.isArray(parsed) ? parsed : Array.isArray(parsed.products) ? parsed.products : null;
-    if(!incoming) throw new Error('Invalid JSON file');
-    const normalized = incoming.map(normalize);
-    saveProducts(normalized);
-    toast('Imported products');
+  async function seedDefaults() {
+    await upsertProducts(DEFAULT_PRODUCTS, { merge: true });
+    await metaRef.set({
+      initialized: true,
+      seededAt: Date.now(),
+      seedSource: 'manual-seed',
+      count: Math.max(DEFAULT_PRODUCTS.length, state.products.length),
+    }, { merge: true });
+    showToast('Default products restored without deleting existing items');
   }
 
-  function seedReset(){
-    if(!confirm('Restore the default seed catalogue? This will overwrite current products.')) return;
-    saveProducts(DEFAULT_PRODUCTS.map(normalize));
-    resetForm(true);
-    toast('Seed restored');
+  async function clearAllProducts() {
+    if (!confirm('Delete every product from Firebase? Existing products will be removed from the catalogue.')) return;
+    const snapshot = await productsCol.get();
+    if (snapshot.empty) {
+      showToast('Catalogue already empty');
+      return;
+    }
+    const batch = db.batch();
+    snapshot.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+    await metaRef.set({
+      initialized: true,
+      clearedAt: Date.now(),
+      seedSource: 'manual-clear',
+      count: 0,
+    }, { merge: true });
+    resetForm();
+    showToast('All products deleted');
   }
 
-  function clearAll(){
-    if(!confirm('Clear ALL products from this browser?')) return;
-    saveProducts([]);
-    resetForm(true);
-    toast('All products cleared');
+  function subscribeProducts() {
+    if (unsubscribeProducts) unsubscribeProducts();
+    unsubscribeProducts = productsCol.onSnapshot(snapshot => {
+      state.products = snapshot.docs.map(doc => normalizeProduct({ id: doc.id, ...doc.data() }));
+      state.ready = true;
+      renderAll();
+    }, error => {
+      console.error('Firestore products listener failed:', error);
+      showToast('Could not load products from Firebase');
+    });
   }
 
-  function duplicateSeedOnTop(){
-    const current = state.products.map(normalize);
-    const copies = DEFAULT_PRODUCTS.map(product => normalize({ ...product, id: makeId('seed') }));
-    saveProducts([...copies, ...current]);
-    toast('Seed products added to top');
-  }
+  function attachEvents() {
+    els.productForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await saveCurrentProduct();
+        if (els.editId?.value) {
+          // keep editing selected so user can continue tweaking if needed
+          state.editingId = els.editId.value;
+        }
+      } catch (error) {
+        console.error(error);
+        showToast('Save failed. Check Firestore permissions.');
+      }
+    });
 
-  function sortFeatured(){
-    state.sort = 'featured';
-    renderAll();
-    toast('Sorted by featured rank');
-  }
+    const previewInputs = ['name', 'sport', 'category', 'brand', 'price', 'oldPrice', 'year', 'badge', 'badgeTone', 'popular', 'featured', 'tags'];
+    previewInputs.forEach(key => {
+      els[key]?.addEventListener('input', renderPreviewFromCurrent);
+      els[key]?.addEventListener('change', renderPreviewFromCurrent);
+    });
 
-  function sortSport(){
-    state.sort = 'sport';
-    renderAll();
-    toast('Sorted by sport');
-  }
-
-  function updatePreviewFromForm(){
-    const name = els.name.value.trim();
-    const brand = els.brand.value.trim();
-    const sport = els.sport.value;
-    updatePreview(state.previewImage, name || 'Preview', brand, sport);
-  }
-
-  function wireEvents(){
-    els.productForm.addEventListener('submit', handleSubmit);
-    els.cancelEditBtn.addEventListener('click', () => resetForm());
-    els.resetBtn.addEventListener('click', () => resetForm());
-    els.seedBtn.addEventListener('click', seedReset);
-    els.exportBtn.addEventListener('click', exportJSON);
-    els.clearAllBtn.addEventListener('click', clearAll);
-    els.sortNameBtn.addEventListener('click', sortFeatured);
-    els.sortSportBtn.addEventListener('click', sortSport);
-    els.duplicateSeedBtn.addEventListener('click', duplicateSeedOnTop);
-    els.productList.addEventListener('click', handleListClick);
-
-    els.imageFile.addEventListener('change', () => {
+    els.imageFile?.addEventListener('change', () => {
       const file = els.imageFile.files && els.imageFile.files[0];
-      if(!file) return;
+      if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
         state.previewImage = String(reader.result || '');
-        updatePreview(state.previewImage, els.name.value.trim() || 'Preview', els.brand.value.trim(), els.sport.value);
+        renderPreviewFromCurrent();
       };
       reader.readAsDataURL(file);
     });
 
-    ['name','brand','sport'].forEach(id => {
-      $(id).addEventListener('input', updatePreviewFromForm);
-      $(id).addEventListener('change', updatePreviewFromForm);
+    els.cancelEditBtn?.addEventListener('click', () => resetForm());
+    els.resetBtn?.addEventListener('click', () => resetForm());
+    els.seedBtn?.addEventListener('click', () => {
+      seedDefaults().catch(error => {
+        console.error(error);
+        showToast('Seed failed');
+      });
+    });
+    els.duplicateSeedBtn?.addEventListener('click', () => {
+      seedDefaults().catch(error => {
+        console.error(error);
+        showToast('Seed failed');
+      });
+    });
+    els.exportBtn?.addEventListener('click', () => {
+      exportCatalog().catch(error => {
+        console.error(error);
+        showToast('Export failed');
+      });
+    });
+    els.importFile?.addEventListener('change', async () => {
+      const file = els.importFile.files && els.importFile.files[0];
+      if (!file) return;
+      try {
+        await importCatalogFile(file);
+      } catch (error) {
+        console.error(error);
+        showToast('Import failed');
+      } finally {
+        els.importFile.value = '';
+      }
+    });
+    els.clearAllBtn?.addEventListener('click', () => {
+      clearAllProducts().catch(error => {
+        console.error(error);
+        showToast('Could not clear catalogue');
+      });
     });
 
-    els.importFile.addEventListener('change', async () => {
-      const file = els.importFile.files && els.importFile.files[0];
-      if(!file) return;
-      try{
-        await importJSON(file);
-      }catch(err){
-        alert(err.message || 'Unable to import JSON');
-      }finally{
-        els.importFile.value = '';
+    els.sortNameBtn?.addEventListener('click', () => {
+      state.sort = 'name';
+      renderList();
+    });
+    els.sortSportBtn?.addEventListener('click', () => {
+      state.sort = 'sport';
+      renderList();
+    });
+
+    els.productList?.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const item = btn.closest('[data-id]');
+      if (!item) return;
+      const id = item.getAttribute('data-id');
+      const action = btn.getAttribute('data-action');
+      if (action === 'edit') editProduct(id);
+      if (action === 'delete') {
+        deleteProduct(id).catch(error => {
+          console.error(error);
+          showToast('Delete failed');
+        });
       }
     });
   }
 
-  state.products = await loadProducts();
-  renderAll();
-  updatePreview('', 'Preview', '', '');
-  wireEvents();
+  async function init() {
+    if (initDone) return;
+    initDone = true;
+    attachEvents();
+    resetForm();
+    renderAll();
+    try {
+      await ensureCatalogSeeded();
+    } catch (error) {
+      console.error(error);
+      showToast('Firebase catalog could not be initialized');
+    } finally {
+      subscribeProducts();
+    }
+  }
+
+  init();
 })();
+
 </script>
 </body>
 </html>

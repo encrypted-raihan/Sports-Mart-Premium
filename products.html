@@ -1122,13 +1122,17 @@ button,input,select{font:inherit}
 }
 
 </style>
+
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore-compat.js"></script>
+
 </head>
 <body>
 <div class="topbar">
   <div class="container topbar-inner">
     <div class="brand">
       <h1>All Products</h1>
-      <p>Products synced from Firebase Firestore</p>
+      <p>Products synced with Firebase</p>
     </div>
     <div class="top-actions">
       <a class="btn ghost" href="index.html#shop">Home</a>
@@ -1142,7 +1146,7 @@ button,input,select{font:inherit}
     <div class="hero-panel">
       <div class="hero-kicker">// Complete catalogue</div>
       <h2>Browse Every <span class="alt">Product</span></h2>
-      <p>Search products, switch categories, and add items to cart. Products now load from Firebase Firestore, while cart items stay saved in this browser. Order enquiries open directly in WhatsApp.</p>
+      <p>Search products, switch categories, and add items to cart. Everything stays synced with Firebase, and order enquiries open directly in WhatsApp.</p>
       <div class="hero-actions">
         <a href="#catalog" class="btn primary">Shop Now</a>
         <a href="https://wa.me/918921373326?text=Hi%20Sports%20Mart%20Premium%2C%20I%20want%20to%20enquire%20about%20your%20products." class="btn green" target="_blank" rel="noopener">WhatsApp</a>
@@ -1209,7 +1213,7 @@ button,input,select{font:inherit}
   <footer class="footer">
     <div>
       <div class="copy">© Sports Mart Premium</div>
-      <div class="note">Products from Firebase · Cart in browser</div>
+      <div class="note">Saved in Firebase</div>
     </div>
     <div class="footer-links">
       <a href="#catalog">Products</a>
@@ -1243,32 +1247,32 @@ button,input,select{font:inherit}
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, getDocs, onSnapshot, writeBatch, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+<script>
 
-(async () => {
+(() => {
   'use strict';
 
   const PHONE = '918921373326';
-  const STORAGE_PRODUCTS = 'sportsmart_products_v1';
-  const STORAGE_CART = 'sportsmart_cart_v1';
-  const formatINR = new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 });
+  const CART_KEY = 'sportsmart_cart_v1';
+  const PRODUCTS_KEY = 'sportsmart_products_v1';
+  const formatINR = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
 
   const firebaseConfig = {
-    "apiKey": "AIzaSyCE3iqTHqbD1dGVaMSWc8iih_RfBx9b_74",
-    "authDomain": "sportsmart-e5f5b.firebaseapp.com",
-    "projectId": "sportsmart-e5f5b",
-    "storageBucket": "sportsmart-e5f5b.firebasestorage.app",
-    "messagingSenderId": "962796065921",
-    "appId": "1:962796065921:web:35305c4d26f7c5c68ba980",
-    "measurementId": "G-9JH0J97VHE"
+    apiKey: "AIzaSyCE3iqTHqbD1dGVaMSWc8iih_RfBx9b_74",
+    authDomain: "sportsmart-e5f5b.firebaseapp.com",
+    projectId: "sportsmart-e5f5b",
+    storageBucket: "sportsmart-e5f5b.firebasestorage.app",
+    messagingSenderId: "962796065921",
+    appId: "1:962796065921:web:35305c4d26f7c5c68ba980",
+    measurementId: "G-9JH0J97VHE"
   };
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const productsCol = collection(db, 'products');
-  const metaRef = doc(db, 'meta', 'catalog');
-  let productsUnsubscribe = null;
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.firestore();
+  const productsCol = db.collection('products');
+  const metaRef = db.collection('meta').doc('catalog');
 
   const DEFAULT_PRODUCTS = [
     { id:'cricket-bat-pro',        name:'Professional Cricket Bat',       sport:'Cricket',    category:'Equipment',   brand:'Kashmir Willow · Premium Range',  badge:'Bestseller',  badgeTone:'fire',  price:1299, oldPrice:1499, popular:99, featured:1,  year:2024, tags:['bat','kashmir willow','performance'], image:'' },
@@ -1286,37 +1290,26 @@ import { getFirestore, collection, doc, getDoc, getDocs, onSnapshot, writeBatch,
     { id:'chess-set-premium',      name:'Premium Chess Set',              sport:'Chess',      category:'Accessories', brand:'Chess · Elite Board',             badge:'Classic',      badgeTone:'gold',  price:649,  oldPrice:799,  popular:72, featured:9,  year:2023, tags:['board','pieces','chess'], image:'' },
   ];
 
-  const SPORT_META = {
-    Cricket: { emoji:'🏏' },
-    Football:{ emoji:'⚽' },
-    Badminton:{ emoji:'🏸' },
-    Basketball:{ emoji:'🏀' },
-    Fitness:{ emoji:'🏋️' },
-    Sportswear:{ emoji:'👕' },
-    Swimming:{ emoji:'🏊' },
-    Chess:{ emoji:'♟️' },
-  };
-
   const els = {
-    productsGrid: document.getElementById('productsGrid'),
-    resultsCount: document.getElementById('resultsCount'),
-    resultsNote: document.getElementById('resultsNote'),
+    openCartBtnTop: document.getElementById('openCartBtnTop'),
+    cartCountTop: document.getElementById('cartCountTop'),
     filtersHint: document.getElementById('filtersHint'),
     searchInput: document.getElementById('searchInput'),
     sportSelect: document.getElementById('sportSelect'),
     categorySelect: document.getElementById('categorySelect'),
     sortSelect: document.getElementById('sortSelect'),
     clearFiltersBtn: document.getElementById('clearFiltersBtn'),
-    cartCountTop: document.getElementById('cartCountTop'),
-    cartBody: document.getElementById('cartBody'),
-    cartSubtotal: document.getElementById('cartSubtotal'),
-    checkoutBtn: document.getElementById('checkoutBtn'),
+    resultsCount: document.getElementById('resultsCount'),
+    resultsNote: document.getElementById('resultsNote'),
+    productsGrid: document.getElementById('productsGrid'),
+    backTop: document.getElementById('backTop'),
     backdrop: document.getElementById('backdrop'),
     cartDrawer: document.getElementById('cartDrawer'),
-    openCartBtnTop: document.getElementById('openCartBtnTop'),
     closeCartBtn: document.getElementById('closeCartBtn'),
+    cartBody: document.getElementById('cartBody'),
+    cartSubtotal: document.getElementById('cartSubtotal'),
     clearCartBtn: document.getElementById('clearCartBtn'),
-    backTop: document.getElementById('backTop'),
+    checkoutBtn: document.getElementById('checkoutBtn'),
     toastWrap: document.getElementById('toastWrap'),
   };
 
@@ -1327,228 +1320,398 @@ import { getFirestore, collection, doc, getDoc, getDocs, onSnapshot, writeBatch,
     sort: 'featured',
     products: [],
     cart: loadCart(),
+    ready: false,
   };
 
+  let unsubscribeProducts = null;
+  let initDone = false;
 
-async function ensureSeeded(){
-  const metaSnap = await getDoc(metaRef);
-  if(metaSnap.exists() && metaSnap.data()?.seeded) return;
-
-  const existing = await getDocs(productsCol);
-  if(existing.empty){
-    const batch = writeBatch(db);
-    DEFAULT_PRODUCTS.map(normalize).forEach(product => {
-      batch.set(doc(productsCol, product.id), product);
-    });
-    batch.set(metaRef, {
-      seeded: true,
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
-    await batch.commit();
-  }else{
-    await setDoc(metaRef, {
-      seeded: true,
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
+  function safeText(v) {
+    return String(v ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
   }
-}
 
-async function initProducts(){
-  await ensureSeeded();
-  const snap = await getDocs(productsCol);
-  state.products = snap.docs.map(docSnap => normalize({ id: docSnap.id, ...docSnap.data() }));
-  renderAll();
+  function money(v) {
+    return formatINR.format(Number(v || 0));
+  }
 
-  if(productsUnsubscribe) productsUnsubscribe();
-  productsUnsubscribe = onSnapshot(productsCol, liveSnap => {
-    state.products = liveSnap.docs.map(docSnap => normalize({ id: docSnap.id, ...docSnap.data() }));
-    renderAll();
-  }, err => {
-    console.error('Firestore listener failed:', err);
-  });
-}
+  function makeId(prefix = 'prod') {
+    return `${prefix}-${Math.random().toString(36).slice(2, 8)}-${Date.now().toString(36)}`;
+  }
 
-function loadCart(){
+  function normalizeProduct(product) {
+    const rawTags = Array.isArray(product?.tags)
+      ? product.tags
+      : String(product?.tags || '')
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean);
 
-    try{
-      const raw = JSON.parse(localStorage.getItem(STORAGE_CART) || '[]');
-      return Array.isArray(raw) ? raw : [];
-    }catch{
+    const price = Number(product?.price || 0);
+    const oldPrice = Number(product?.oldPrice || 0);
+    const featured = Number(product?.featured || 999);
+    const updatedAt = Number(product?.updatedAt || product?.createdAt || Date.now());
+    const createdAt = Number(product?.createdAt || updatedAt);
+
+    return {
+      id: String(product?.id || makeId('prod')),
+      name: String(product?.name || 'Untitled Product'),
+      sport: String(product?.sport || 'Sportswear'),
+      category: String(product?.category || 'General'),
+      brand: String(product?.brand || ''),
+      badge: String(product?.badge || ''),
+      badgeTone: ['fire', 'gold', 'green'].includes(product?.badgeTone) ? product.badgeTone : 'fire',
+      image: String(product?.image || ''),
+      price,
+      oldPrice,
+      popular: Number(product?.popular || 0),
+      featured,
+      year: Number(product?.year || new Date().getFullYear()),
+      tags: rawTags,
+      updatedAt,
+      createdAt,
+    };
+  }
+
+  function loadCart() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      if (!Array.isArray(raw)) return [];
+      return raw
+        .map(item => ({
+          id: String(item?.id || ''),
+          qty: Math.max(1, Number(item?.qty || 1)),
+        }))
+        .filter(item => item.id);
+    } catch {
       return [];
     }
   }
 
-  function saveCart(cart){
-    localStorage.setItem(STORAGE_CART, JSON.stringify(cart));
+  function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
     state.cart = cart;
     renderCart();
     updateCartBadges();
   }
 
-  function safeText(v){
-    return String(v ?? '')
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'","&#39;");
+  function loadLegacyCatalog() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(PRODUCTS_KEY) || '[]');
+      if (!Array.isArray(raw)) return [];
+      return raw.map(normalizeProduct);
+    } catch {
+      return [];
+    }
   }
 
-  function money(v){
-    return formatINR.format(Number(v || 0));
+  function showToast(message) {
+    if (!els.toastWrap) return;
+    const node = document.createElement('div');
+    node.className = 'toast';
+    node.innerHTML = '<div class="b"></div><div class="t"></div>';
+    node.querySelector('.t').textContent = message;
+    els.toastWrap.appendChild(node);
+    setTimeout(() => {
+      node.style.opacity = '0';
+      node.style.transform = 'translateY(12px)';
+      setTimeout(() => node.remove(), 220);
+    }, 2600);
   }
 
-  function makeId(prefix='prod'){
-    return `${prefix}-${Math.random().toString(36).slice(2,8)}-${Date.now().toString(36)}`;
+  function openCart() {
+    els.cartDrawer?.classList.add('open');
+    els.backdrop?.classList.add('show');
+    els.cartDrawer?.setAttribute('aria-hidden', 'false');
+    els.backdrop?.setAttribute('aria-hidden', 'false');
   }
 
-  function normalize(product){
-    return {
-      id: product.id || makeId('prod'),
-      name: product.name || 'Untitled Product',
-      sport: product.sport || 'Sportswear',
-      category: product.category || 'General',
-      brand: product.brand || '',
-      badge: product.badge || '',
-      badgeTone: product.badgeTone || 'fire',
-      image: product.image || '',
-      price: Number(product.price || 0),
-      oldPrice: Number(product.oldPrice || 0),
-      popular: Number(product.popular || 0),
-      featured: Number(product.featured || 999),
-      year: Number(product.year || new Date().getFullYear()),
-      tags: Array.isArray(product.tags) ? product.tags : String(product.tags || '').split(',').map(s => s.trim()).filter(Boolean)
-    };
+  function closeCart() {
+    els.cartDrawer?.classList.remove('open');
+    els.backdrop?.classList.remove('show');
+    els.cartDrawer?.setAttribute('aria-hidden', 'true');
+    els.backdrop?.setAttribute('aria-hidden', 'true');
   }
 
-  function unique(arr){
-    return [...new Set(arr)];
+  function getProductById(id) {
+    return state.products.find(p => p.id === id) || null;
   }
 
-  function getAllProducts(){
-    return state.products.map(normalize);
+  function buildWhatsAppLink(items) {
+    const lines = ['Hi Sports Mart Premium, I want to order:'];
+    let total = 0;
+    items.forEach(item => {
+      const product = getProductById(item.id);
+      const name = product?.name || item.name || 'Product';
+      const price = Number(product?.price ?? item.price ?? 0);
+      const qty = Number(item.qty || 1);
+      total += price * qty;
+      lines.push(`- ${name} x ${qty} = ₹${price * qty}`);
+    });
+    lines.push(`Total: ₹${total}`);
+    lines.push('Please confirm availability.');
+    return `https://wa.me/${PHONE}?text=${encodeURIComponent(lines.join('\n'))}`;
   }
 
-  function getFilteredProducts(){
-    const query = state.query.trim().toLowerCase();
-    let list = getAllProducts().filter(product => {
-      const qMatch = !query || [
+  function updateCartBadges() {
+    const totalQty = state.cart.reduce((sum, item) => sum + Number(item.qty || 0), 0);
+    if (els.cartCountTop) els.cartCountTop.textContent = String(totalQty);
+  }
+
+  function updateCheckoutLink() {
+    if (els.checkoutBtn) {
+      els.checkoutBtn.href = buildWhatsAppLink(state.cart);
+    }
+  }
+
+  function addToCart(productId) {
+    const product = getProductById(productId);
+    if (!product) {
+      showToast('That product is no longer available.');
+      return;
+    }
+    const cart = [...state.cart];
+    const idx = cart.findIndex(item => item.id === productId);
+    if (idx >= 0) {
+      cart[idx].qty = Number(cart[idx].qty || 1) + 1;
+    } else {
+      cart.push({ id: productId, qty: 1 });
+    }
+    saveCart(cart);
+    showToast(`${product.name} added to cart`);
+    openCart();
+  }
+
+  function removeFromCart(productId) {
+    saveCart(state.cart.filter(item => item.id !== productId));
+  }
+
+  function changeQty(productId, delta) {
+    const cart = state.cart.map(item => {
+      if (item.id !== productId) return item;
+      return { ...item, qty: Math.max(1, Number(item.qty || 1) + delta) };
+    });
+    saveCart(cart);
+  }
+
+  function clearCart() {
+    saveCart([]);
+    showToast('Cart cleared');
+  }
+
+  function renderCart() {
+    if (!els.cartBody) return;
+    if (!state.cart.length) {
+      els.cartBody.innerHTML = `
+        <div class="drawer-empty">
+          <h3>Your cart is empty</h3>
+          <p>Add products from the catalogue to build an order.</p>
+        </div>
+      `;
+      if (els.cartSubtotal) els.cartSubtotal.textContent = '₹0';
+      updateCheckoutLink();
+      return;
+    }
+
+    let subtotal = 0;
+    const html = state.cart.map(item => {
+      const product = getProductById(item.id);
+      const name = product?.name || item.name || 'Product';
+      const sport = product?.sport || item.sport || '';
+      const price = Number(product?.price ?? item.price ?? 0);
+      const qty = Number(item.qty || 1);
+      subtotal += price * qty;
+      const image = product?.image || item.image || '';
+      const badge = product?.badge || '';
+      const fallback = safeText((name || 'P').slice(0, 1));
+
+      return `
+        <article class="cart-item" data-id="${safeText(item.id)}">
+          <div class="cart-thumb">
+            ${image ? `<img src="${safeText(image)}" alt="${safeText(name)}" />` : `<div class="fallback">${fallback}</div>`}
+          </div>
+          <div>
+            <div class="cart-top">
+              <div>
+                <h4 class="cart-name">${safeText(name)}</h4>
+                <div class="cart-meta">${safeText(sport)}${badge ? ` · ${safeText(badge)}` : ''}</div>
+              </div>
+              <div class="cart-price">${money(price * qty)}</div>
+            </div>
+            <div class="cart-controls">
+              <div class="qty">
+                <button type="button" data-action="dec" aria-label="Decrease quantity">−</button>
+                <span>${qty}</span>
+                <button type="button" data-action="inc" aria-label="Increase quantity">+</button>
+              </div>
+              <button class="remove-btn" type="button" data-action="remove">Remove</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    els.cartBody.innerHTML = html;
+    if (els.cartSubtotal) els.cartSubtotal.textContent = money(subtotal);
+    updateCheckoutLink();
+  }
+
+  function getFilteredProducts() {
+    const q = state.query.trim().toLowerCase();
+    return state.products.filter(product => {
+      const sportOk = state.sport === 'All' || product.sport === state.sport;
+      const categoryOk = state.category === 'All' || product.category === state.category;
+      const haystack = [
         product.name,
+        product.brand,
         product.sport,
         product.category,
-        product.brand,
-        ...(product.tags || [])
-      ].some(v => String(v || '').toLowerCase().includes(query));
-
-      const sportMatch = state.sport === 'All' || product.sport === state.sport;
-      const catMatch = state.category === 'All' || product.category === state.category;
-      return qMatch && sportMatch && catMatch;
+        product.badge,
+        ...(Array.isArray(product.tags) ? product.tags : []),
+      ].join(' ').toLowerCase();
+      const queryOk = !q || haystack.includes(q);
+      return sportOk && categoryOk && queryOk;
     });
-    return sortProducts(list, state.sort);
   }
 
-  function sortProducts(list, sort){
-    const copy = [...list];
-    switch(sort){
+  function sortProducts(list) {
+    const items = [...list];
+    switch (state.sort) {
       case 'popular':
-        copy.sort((a,b) => (b.popular || 0) - (a.popular || 0) || (a.featured || 999) - (b.featured || 999));
-        break;
+        return items.sort((a, b) => Number(b.popular || 0) - Number(a.popular || 0) || Number(a.featured || 999) - Number(b.featured || 999));
       case 'newest':
-        copy.sort((a,b) => (b.year || 0) - (a.year || 0) || (a.featured || 999) - (b.featured || 999));
-        break;
+        return items.sort((a, b) => Number(b.updatedAt || b.createdAt || b.year || 0) - Number(a.updatedAt || a.createdAt || a.year || 0));
       case 'price-asc':
-        copy.sort((a,b) => (a.price || 0) - (b.price || 0));
-        break;
+        return items.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
       case 'price-desc':
-        copy.sort((a,b) => (b.price || 0) - (a.price || 0));
-        break;
+        return items.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
       case 'name-asc':
-        copy.sort((a,b) => a.name.localeCompare(b.name));
-        break;
+        return items.sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
       case 'featured':
       default:
-        copy.sort((a,b) => (a.featured || 999) - (b.featured || 999) || (b.popular || 0) - (a.popular || 0));
-        break;
+        return items.sort((a, b) => Number(a.featured || 999) - Number(b.featured || 999) || Number(b.popular || 0) - Number(a.popular || 0));
     }
-    return copy;
   }
 
-  function populateFilterOptions(){
-    const products = getAllProducts();
-    const sports = unique(products.map(p => p.sport));
-    const categories = unique(products.map(p => p.category));
-
-    els.sportSelect.innerHTML = ['<option value="All">All Sports</option>']
-      .concat(sports.map(s => `<option value="${safeText(s)}">${safeText(s)}</option>`))
-      .join('');
-
-    els.categorySelect.innerHTML = ['<option value="All">All Categories</option>']
-      .concat(categories.map(c => `<option value="${safeText(c)}">${safeText(c)}</option>`))
-      .join('');
-
-    els.sportSelect.value = state.sport;
-    els.categorySelect.value = state.category;
-
-    els.filtersHint.textContent = [
-      state.sport === 'All' ? 'All sports' : state.sport,
-      state.category === 'All' ? 'All categories' : state.category
-    ].join(' · ');
+  function uniqueSorted(values) {
+    return [...new Set(values.filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b)));
   }
 
-  function buildNote(total){
-    if(!total) return 'No results for current filters.';
-    if(state.query || state.sport !== 'All' || state.category !== 'All'){
-      const pieces = [];
-      if(state.query) pieces.push(`search: “${state.query}”`);
-      if(state.sport !== 'All') pieces.push(`sport: ${state.sport}`);
-      if(state.category !== 'All') pieces.push(`category: ${state.category}`);
-      return `Showing ${total} result${total === 1 ? '' : 's'} for ${pieces.join(' · ')}.`;
+  function refreshFilterOptions() {
+    const sports = uniqueSorted(state.products.map(p => p.sport));
+    const categories = uniqueSorted(state.products.map(p => p.category));
+    const currentSport = state.sport;
+    const currentCategory = state.category;
+
+    if (els.sportSelect) {
+      els.sportSelect.innerHTML = '<option value="All">All Sports</option>' + sports.map(s => `<option value="${safeText(s)}">${safeText(s)}</option>`).join('');
+      els.sportSelect.value = sports.includes(currentSport) ? currentSport : 'All';
     }
-    return `Showing all ${total} products.`;
-  }
-
-  function groupBySport(list){
-    const map = new Map();
-    for(const product of list){
-      if(!map.has(product.sport)) map.set(product.sport, []);
-      map.get(product.sport).push(product);
+    if (els.categorySelect) {
+      els.categorySelect.innerHTML = '<option value="All">All Categories</option>' + categories.map(c => `<option value="${safeText(c)}">${safeText(c)}</option>`).join('');
+      els.categorySelect.value = categories.includes(currentCategory) ? currentCategory : 'All';
     }
-    return map;
   }
 
-  function renderProducts(){
-    const list = getFilteredProducts();
-    const grouped = groupBySport(list);
-    const totalResults = list.length;
-    const sportCount = unique(getAllProducts().map(p => p.sport)).length;
+  function badgeClass(tone) {
+    if (tone === 'green') return 'green';
+    if (tone === 'gold') return 'gold';
+    return '';
+  }
 
-    els.resultsCount.textContent = `${totalResults} product${totalResults === 1 ? '' : 's'}`;
-    els.resultsNote.textContent = buildNote(totalResults);
+  function renderProductCard(product) {
+    const image = product.image || '';
+    const fallback = safeText((product.name || 'P').slice(0, 1));
+    const oldPrice = Number(product.oldPrice || 0);
+    const year = Number(product.year || new Date().getFullYear());
+    const tags = Array.isArray(product.tags) ? product.tags : [];
+    const badge = product.badge ? `
+      <div class="product-badge ${badgeClass(product.badgeTone)}">${safeText(product.badge)}</div>
+    ` : '';
 
-    if(!totalResults){
+    return `
+      <article class="product-card" data-id="${safeText(product.id)}">
+        <div class="product-media">
+          ${badge}
+          ${image ? `<img src="${safeText(image)}" alt="${safeText(product.name)}" loading="lazy" />` : `<div class="product-fallback">${fallback}</div>`}
+        </div>
+        <div class="product-body">
+          <div class="product-meta">${safeText(product.sport)} · ${safeText(product.category)} · ${safeText(product.brand || '')}</div>
+          <h3 class="product-name">${safeText(product.name)}</h3>
+          <div class="product-tags">${safeText(tags.join(', '))}</div>
+          <div class="product-footer">
+            <div class="price">
+              ${oldPrice > 0 ? `<span class="old">${money(oldPrice)}</span>` : ''}
+              ${money(product.price)}
+              <small>${year}</small>
+            </div>
+            <div class="product-actions">
+              <button class="small-btn cart" type="button" data-action="add">Add to Cart</button>
+              <button class="small-btn enquire" type="button" data-action="enquire">Enquire</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderProducts() {
+    if (!els.productsGrid) return;
+    const filtered = sortProducts(getFilteredProducts());
+    const total = state.products.length;
+    const shown = filtered.length;
+
+    if (els.resultsCount) {
+      els.resultsCount.textContent = `${shown} product${shown === 1 ? '' : 's'}`;
+    }
+
+    const hintParts = [];
+    if (state.query) hintParts.push(`Search: "${state.query}"`);
+    if (state.sport !== 'All') hintParts.push(state.sport);
+    if (state.category !== 'All') hintParts.push(state.category);
+    if (!hintParts.length) hintParts.push('All products');
+    if (els.filtersHint) els.filtersHint.textContent = hintParts.join(' · ');
+
+    if (els.resultsNote) {
+      els.resultsNote.textContent = total
+        ? `Showing ${shown} of ${total} products from Firebase.`
+        : 'No products are available yet.';
+    }
+
+    if (!filtered.length) {
       els.productsGrid.innerHTML = `
         <div class="empty-state">
           <h3>No products found</h3>
-          <p>Try a different search term, sport, category, or sort order.</p>
+          <p>Try a different search term or clear the filters.</p>
         </div>
       `;
       return;
     }
 
+    const groups = new Map();
+    for (const product of filtered) {
+      const key = product.sport || 'Products';
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(product);
+    }
+
     let html = '';
-    for(const [sport, items] of grouped){
-      const meta = SPORT_META[sport] || { emoji:'🛒' };
+    for (const [sport, items] of groups.entries()) {
       html += `
-        <section class="cat-block">
+        <section class="cat-block" data-sport="${safeText(sport)}">
           <div class="cat-header">
             <div class="cat-left">
-              <div class="cat-badge">${meta.emoji}</div>
+              <div class="cat-badge">${safeText((sport || 'P').slice(0,1))}</div>
               <div>
                 <h3 class="cat-name">${safeText(sport)}</h3>
                 <div class="cat-count">${items.length} item${items.length === 1 ? '' : 's'}</div>
               </div>
             </div>
-            <button class="cat-view" type="button" data-focus-sport="${safeText(sport)}">View all</button>
+            <button type="button" class="cat-view" data-action="focus-sport" data-sport="${safeText(sport)}">Filter</button>
           </div>
           <div class="products-grid">
             ${items.map(renderProductCard).join('')}
@@ -1559,251 +1722,186 @@ function loadCart(){
     els.productsGrid.innerHTML = html;
   }
 
-  function renderProductCard(product){
-    const badgeClass = product.badgeTone === 'gold' ? 'gold' : product.badgeTone === 'green' ? 'green' : 'fire';
-    const fallback = safeText((product.name || 'P').trim().slice(0,1).toUpperCase());
-    return `
-      <article class="product-card" data-product-id="${safeText(product.id)}">
-        <div class="product-media">
-          ${product.image ? `<img src="${safeText(product.image)}" alt="${safeText(product.name)}" loading="lazy">` : `<div class="product-fallback">${fallback}</div>`}
-          ${product.badge ? `<div class="product-badge ${badgeClass}">${safeText(product.badge)}</div>` : ''}
-        </div>
-        <div class="product-body">
-          <div class="product-meta">${safeText(product.brand || product.category || product.sport)}</div>
-          <h3 class="product-name">${safeText(product.name)}</h3>
-          <div class="product-footer">
-            <div class="price">
-              ${product.oldPrice ? `<span class="old">${money(product.oldPrice)}</span>` : ''}
-              ${money(product.price)}
-              <small>${safeText(product.category)} · ${safeText(product.sport)}</small>
-            </div>
-            <div class="product-actions">
-              <button class="small-btn cart" type="button" data-add-cart="${safeText(product.id)}">Add to cart</button>
-              <a class="small-btn enquire" href="${whatsappUrl(product)}" target="_blank" rel="noopener">WhatsApp</a>
-            </div>
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
-  function whatsappUrl(product){
-    const msg = encodeURIComponent(`Hi Sports Mart Premium, I want to enquire about "${product.name}" (${product.sport}).`);
-    return `https://wa.me/${PHONE}?text=${msg}`;
-  }
-
-  function findProduct(id){
-    return getAllProducts().find(p => p.id === id);
-  }
-
-  function addToCart(id){
-    const product = findProduct(id);
-    if(!product) return;
-    const cart = [...state.cart];
-    const existing = cart.find(item => item.id === id);
-    if(existing) existing.qty += 1;
-    else cart.push({ id, qty: 1 });
-    saveCart(cart);
-    toast(`${product.name} added to cart`);
-    openCart();
-  }
-
-  function setQty(id, qty){
-    const cart = [...state.cart];
-    const idx = cart.findIndex(item => item.id === id);
-    if(idx < 0) return;
-    if(qty <= 0) cart.splice(idx,1);
-    else cart[idx].qty = qty;
-    saveCart(cart);
-  }
-
-  function clearCart(){
-    saveCart([]);
-    toast('Cart cleared');
-  }
-
-  function updateCartBadges(){
-    const count = state.cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-    els.cartCountTop.textContent = String(count);
-  }
-
-  function renderCart(){
-    const productsById = new Map(getAllProducts().map(p => [p.id, p]));
-    const items = state.cart.map(item => {
-      const product = productsById.get(item.id);
-      if(!product) return null;
-      const line = (product.price || 0) * (item.qty || 0);
-      const fallback = safeText((product.name || 'P').slice(0,1).toUpperCase());
-      return `
-        <div class="cart-item" data-cart-id="${safeText(product.id)}">
-          <div class="cart-thumb">
-            ${product.image ? `<img src="${safeText(product.image)}" alt="${safeText(product.name)}">` : `<div class="fallback">${fallback}</div>`}
-          </div>
-          <div>
-            <div class="cart-top">
-              <div>
-                <h4 class="cart-name">${safeText(product.name)}</h4>
-                <div class="cart-meta">${safeText(product.sport)} · ${safeText(product.category)}</div>
-              </div>
-              <div class="cart-price">${money(line)}</div>
-            </div>
-            <div class="cart-controls">
-              <div class="qty">
-                <button type="button" data-qty-minus="${safeText(product.id)}">−</button>
-                <span>${item.qty}</span>
-                <button type="button" data-qty-plus="${safeText(product.id)}">+</button>
-              </div>
-              <button class="remove-btn" type="button" data-remove-cart="${safeText(product.id)}">Remove</button>
-            </div>
-          </div>
-        </div>
-      `;
-    }).filter(Boolean).join('');
-
-    if(!items){
-      els.cartBody.innerHTML = `
-        <div class="drawer-empty">
-          <h3>Your cart is empty</h3>
-          <p>Add products here and they will stay saved in this browser.</p>
-        </div>
-      `;
-      els.cartSubtotal.textContent = money(0);
-      els.checkoutBtn.href = `https://wa.me/${PHONE}?text=${encodeURIComponent('Hi Sports Mart Premium, I want to place an order.')}`;
-      updateCartBadges();
-      return;
-    }
-
-    els.cartBody.innerHTML = items;
-    const subtotal = state.cart.reduce((sum, item) => {
-      const product = productsById.get(item.id);
-      return sum + ((product?.price || 0) * (item.qty || 0));
-    }, 0);
-    els.cartSubtotal.textContent = money(subtotal);
-    const summaryText = state.cart.map(item => {
-      const p = productsById.get(item.id);
-      return p ? `${item.qty}× ${p.name}` : null;
-    }).filter(Boolean).join(', ');
-    els.checkoutBtn.href = `https://wa.me/${PHONE}?text=${encodeURIComponent(`Hi Sports Mart Premium, I want to order: ${summaryText}. Total: ${els.cartSubtotal.textContent}.`)}`;
-    updateCartBadges();
-  }
-
-  function renderAll(){
-    populateFilterOptions();
+  function renderAll() {
+    refreshFilterOptions();
     renderProducts();
     renderCart();
     updateCartBadges();
   }
 
-  function openCart(){
-    els.cartDrawer.classList.add('open');
-    els.backdrop.classList.add('show');
-    els.cartDrawer.setAttribute('aria-hidden', 'false');
+  function focusSport(sport) {
+    state.sport = sport;
+    if (els.sportSelect) els.sportSelect.value = sport;
+    renderProducts();
   }
 
-  function closeCart(){
-    els.cartDrawer.classList.remove('open');
-    els.backdrop.classList.remove('show');
-    els.cartDrawer.setAttribute('aria-hidden', 'true');
-  }
+  function handleProductActions(event) {
+    const button = event.target.closest('button[data-action]');
+    if (!button) return;
+    const card = button.closest('[data-id]');
+    if (!card) return;
+    const productId = card.getAttribute('data-id');
+    const action = button.getAttribute('data-action');
+    const product = getProductById(productId);
+    if (!product) return;
 
-  function toast(message){
-    const el = document.createElement('div');
-    el.className = 'toast';
-    el.innerHTML = `<div class="b"></div><div class="t">${safeText(message)}</div>`;
-    els.toastWrap.appendChild(el);
-    setTimeout(() => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(10px)';
-      setTimeout(() => el.remove(), 220);
-    }, 2200);
-  }
-
-  function clearFilters(){
-    state.query = '';
-    state.sport = 'All';
-    state.category = 'All';
-    state.sort = 'featured';
-    els.searchInput.value = '';
-    els.sportSelect.value = 'All';
-    els.categorySelect.value = 'All';
-    els.sortSelect.value = 'featured';
-    renderAll();
-    els.productsGrid.scrollIntoView({ behavior:'smooth', block:'start' });
-  }
-
-  function handleCatalogClick(event){
-    const addId = event.target.closest('[data-add-cart]')?.getAttribute('data-add-cart');
-    const focusSport = event.target.closest('[data-focus-sport]')?.getAttribute('data-focus-sport');
-    const qtyPlus = event.target.closest('[data-qty-plus]')?.getAttribute('data-qty-plus');
-    const qtyMinus = event.target.closest('[data-qty-minus]')?.getAttribute('data-qty-minus');
-    const remove = event.target.closest('[data-remove-cart]')?.getAttribute('data-remove-cart');
-
-    if(addId) return addToCart(addId);
-    if(qtyPlus){
-      const item = state.cart.find(i => i.id === qtyPlus);
-      if(item) setQty(qtyPlus, (item.qty || 0) + 1);
+    if (action === 'add') {
+      addToCart(productId);
+    } else if (action === 'enquire') {
+      const text = `Hi Sports Mart Premium, I want to enquire about ${product.name}.`;
+      window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    } else if (action === 'focus-sport') {
+      focusSport(button.getAttribute('data-sport') || product.sport || 'All');
     }
-    if(qtyMinus){
-      const item = state.cart.find(i => i.id === qtyMinus);
-      if(item) setQty(qtyMinus, (item.qty || 0) - 1);
+  }
+
+  function handleCartActions(event) {
+    const button = event.target.closest('button[data-action]');
+    if (!button) return;
+    const itemEl = button.closest('[data-id]');
+    if (!itemEl) return;
+    const productId = itemEl.getAttribute('data-id');
+    const action = button.getAttribute('data-action');
+
+    if (action === 'inc') changeQty(productId, 1);
+    if (action === 'dec') changeQty(productId, -1);
+    if (action === 'remove') removeFromCart(productId);
+  }
+
+  async function upsertProducts(products, { merge = true } = {}) {
+    const normalized = products.map(normalizeProduct);
+    const batch = db.batch();
+    normalized.forEach(product => {
+      batch.set(productsCol.doc(product.id), product, merge ? { merge: true } : undefined);
+    });
+    await batch.commit();
+    return normalized;
+  }
+
+  async function ensureCatalogSeeded() {
+    const [metaSnap, catalogSnap] = await Promise.all([
+      metaRef.get(),
+      productsCol.get(),
+    ]);
+
+    if (!catalogSnap.empty) {
+      if (!metaSnap.exists || !metaSnap.data()?.initialized) {
+        await metaRef.set({
+          initialized: true,
+          seededAt: Date.now(),
+          seedSource: 'existing',
+          count: catalogSnap.size,
+        }, { merge: true });
+      }
+      return;
     }
-    if(remove) return setQty(remove, 0);
-    if(focusSport){
-      state.sport = focusSport;
+
+    if (metaSnap.exists && metaSnap.data()?.initialized) {
+      return;
+    }
+
+    const legacy = loadLegacyCatalog();
+    const seedSource = legacy.length ? legacy : DEFAULT_PRODUCTS;
+    await upsertProducts(seedSource, { merge: true });
+    await metaRef.set({
+      initialized: true,
+      seededAt: Date.now(),
+      seedSource: legacy.length ? 'legacy-localstorage' : 'default-seed',
+      count: seedSource.length,
+    }, { merge: true });
+  }
+
+  function subscribeProducts() {
+    if (unsubscribeProducts) unsubscribeProducts();
+    unsubscribeProducts = productsCol.onSnapshot(snapshot => {
+      const next = snapshot.docs.map(doc => normalizeProduct({ id: doc.id, ...doc.data() }));
+      state.products = next;
       renderAll();
-      document.querySelector('.filters-bar')?.scrollIntoView({ behavior:'smooth', block:'start' });
-    }
+      state.ready = true;
+    }, error => {
+      console.error('Firestore products listener failed:', error);
+      showToast('Could not load products from Firebase. Check Firestore rules.');
+    });
   }
 
-  function wireEvents(){
-    els.searchInput.addEventListener('input', e => {
-      state.query = e.target.value;
+  function initEvents() {
+    els.openCartBtnTop?.addEventListener('click', openCart);
+    els.closeCartBtn?.addEventListener('click', closeCart);
+    els.backdrop?.addEventListener('click', closeCart);
+    els.clearCartBtn?.addEventListener('click', clearCart);
+
+    els.searchInput?.addEventListener('input', e => {
+      state.query = e.target.value || '';
+      renderProducts();
+    });
+    els.sportSelect?.addEventListener('change', e => {
+      state.sport = e.target.value || 'All';
+      renderProducts();
+    });
+    els.categorySelect?.addEventListener('change', e => {
+      state.category = e.target.value || 'All';
+      renderProducts();
+    });
+    els.sortSelect?.addEventListener('change', e => {
+      state.sort = e.target.value || 'featured';
+      renderProducts();
+    });
+    els.clearFiltersBtn?.addEventListener('click', () => {
+      state.query = '';
+      state.sport = 'All';
+      state.category = 'All';
+      state.sort = 'featured';
+      if (els.searchInput) els.searchInput.value = '';
+      if (els.sportSelect) els.sportSelect.value = 'All';
+      if (els.categorySelect) els.categorySelect.value = 'All';
+      if (els.sortSelect) els.sortSelect.value = 'featured';
       renderProducts();
     });
 
-    els.sportSelect.addEventListener('change', e => {
-      state.sport = e.target.value;
-      renderAll();
+    els.productsGrid?.addEventListener('click', handleProductActions);
+    els.cartBody?.addEventListener('click', handleCartActions);
+
+    els.cartDrawer?.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeCart();
     });
 
-    els.categorySelect.addEventListener('change', e => {
-      state.category = e.target.value;
-      renderAll();
-    });
-
-    els.sortSelect.addEventListener('change', e => {
-      state.sort = e.target.value;
-      renderProducts();
-    });
-
-    els.clearFiltersBtn.addEventListener('click', clearFilters);
-    document.addEventListener('click', handleCatalogClick);
-
-    els.openCartBtnTop.addEventListener('click', openCart);
-    els.backdrop.addEventListener('click', closeCart);
-    els.closeCartBtn.addEventListener('click', closeCart);
-    els.clearCartBtn.addEventListener('click', clearCart);
-
-    els.backTop.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
-
-    window.addEventListener('scroll', () => {
-      els.backTop.classList.toggle('show', window.scrollY > 500);
-    });
-    window.addEventListener('storage', e => {
-      if(e.key === STORAGE_CART){
-        state.cart = loadCart();
-        renderCart();
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('.cat-view');
+      if (btn && btn.dataset.action === 'focus-sport') {
+        focusSport(btn.dataset.sport || 'All');
       }
     });
 
-    document.addEventListener('keydown', e => {
-      if(e.key === 'Escape') closeCart();
+    window.addEventListener('scroll', () => {
+      if (!els.backTop) return;
+      els.backTop.classList.toggle('show', window.scrollY > 500);
+    });
+    els.backTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    window.addEventListener('beforeunload', () => {
+      if (unsubscribeProducts) unsubscribeProducts();
     });
   }
 
-  await initProducts();
-  wireEvents();
+  function init() {
+    if (initDone) return;
+    initDone = true;
+    initEvents();
+    renderCart();
+    updateCartBadges();
+    ensureCatalogSeeded()
+      .catch(error => {
+        console.error(error);
+        showToast('Firebase catalog could not be initialized.');
+      })
+      .finally(() => {
+        subscribeProducts();
+      });
+  }
+
+  init();
 })();
+
 </script>
 </body>
 </html>
