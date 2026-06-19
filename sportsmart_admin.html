@@ -663,16 +663,19 @@ small.help{
           <input class="input" id="name" required placeholder="Professional Cricket Bat" />
         </div>
         <div class="field">
-          <label for="sport">Sport</label>
+          <label for="sport">Section</label>
           <select class="select" id="sport" required>
-            <option>Cricket</option>
-            <option>Football</option>
             <option>Badminton</option>
-            <option>Basketball</option>
-            <option>Fitness</option>
-            <option>Sportswear</option>
+            <option>Football</option>
+            <option>Cricket</option>
+            <option>Volleyball</option>
+            <option>Martial arts</option>
+            <option>Athletics</option>
+            <option>Apparels</option>
             <option>Swimming</option>
-            <option>Chess</option>
+            <option>Orthopedics</option>
+            <option>Accessories</option>
+            <option>Skating</option>
           </select>
         </div>
       </div>
@@ -899,6 +902,31 @@ small.help{
     ready: false,
   };
 
+
+const SECTION_OPTIONS = ["Badminton", "Football", "Cricket", "Volleyball", "Martial arts", "Athletics", "Apparels", "Swimming", "Orthopedics", "Accessories", "Skating"];
+const SECTION_ALIASES = {
+  Basketball: 'Athletics',
+  Fitness: 'Athletics',
+  Sportswear: 'Apparels',
+  Chess: 'Accessories',
+  'Martial Arts': 'Martial arts',
+  'martial arts': 'Martial arts',
+  Apparel: 'Apparels',
+  Equipment: 'Accessories',
+  General: 'Accessories',
+  Training: 'Athletics',
+  Footwear: 'Accessories',
+};
+
+function normalizeSection(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return SECTION_OPTIONS[0];
+  const direct = SECTION_OPTIONS.find(section => section.toLowerCase() === raw.toLowerCase());
+  if (direct) return direct;
+  const alias = SECTION_ALIASES[raw] || SECTION_ALIASES[raw.toLowerCase()];
+  if (alias) return alias;
+  return SECTION_OPTIONS[0];
+}
   let unsubscribeProducts = null;
   let initDone = false;
 
@@ -936,7 +964,7 @@ small.help{
     return {
       id: String(product?.id || makeId('prod')),
       name: String(product?.name || 'Untitled Product'),
-      sport: String(product?.sport || 'Sportswear'),
+      sport: normalizeSection(product?.sport || 'Accessories'),
       category: String(product?.category || 'General'),
       brand: String(product?.brand || ''),
       badge: String(product?.badge || ''),
@@ -1028,7 +1056,7 @@ small.help{
     state.editingId = product.id;
     if (els.editId) els.editId.value = product.id;
     if (els.name) els.name.value = product.name || '';
-    if (els.sport) els.sport.value = product.sport || 'Cricket';
+    if (els.sport) els.sport.value = normalizeSection(product.sport || 'Accessories');
     if (els.category) els.category.value = product.category || 'Equipment';
     if (els.brand) els.brand.value = product.brand || '';
     if (els.price) els.price.value = product.price ?? '';
@@ -1057,7 +1085,7 @@ small.help{
     return normalizeProduct({
       id,
       name: els.name?.value.trim() || 'Untitled Product',
-      sport: els.sport?.value || 'Sportswear',
+      sport: normalizeSection(els.sport?.value || 'Accessories'),
       category: els.category?.value || 'General',
       brand: els.brand?.value.trim() || '',
       badge: els.badge?.value.trim() || '',

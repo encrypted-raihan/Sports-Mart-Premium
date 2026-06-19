@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!-- ===== PRIMARY SEO ===== -->
-<title>All Sports Equipment & Sportswear | Sports Mart Premium Kottarakkara</title>
+<title>All Sections Equipment & Sportswear | Sports Mart Premium Kottarakkara</title>
 <meta name="description" content="Browse 500+ sports products — cricket bats, football boots, badminton rackets, fitness gear, sportswear and more. Kottarakkara's No.1 sports store. Order via WhatsApp: +91 89213 73326." />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 <link rel="canonical" href="https://sportsmartpremium.com/products.html" />
@@ -16,7 +16,7 @@
 <meta name="geo.placename" content="Kottarakkara, Kollam, Kerala, India" />
 
 <!-- ===== OPEN GRAPH ===== -->
-<meta property="og:title" content="All Sports Products | Sports Mart Premium Kottarakkara" />
+<meta property="og:title" content="All Sections Products | Sports Mart Premium Kottarakkara" />
 <meta property="og:description" content="500+ sports products — cricket, football, badminton, fitness, swimming, chess & sportswear. Order via WhatsApp across Kerala." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://sportsmartpremium.com/products.html" />
@@ -28,7 +28,7 @@
 
 <!-- ===== TWITTER CARD ===== -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="All Sports Products | Sports Mart Premium" />
+<meta name="twitter:title" content="All Sections Products | Sports Mart Premium" />
 <meta name="twitter:description" content="500+ sports products in Kottarakkara, Kerala. WhatsApp orders across Kerala." />
 <meta name="twitter:image" content="https://sportsmartpremium.com/images/og-products.jpg" />
 
@@ -49,7 +49,7 @@
       "@type": "CollectionPage",
       "@id": "https://sportsmartpremium.com/products.html#webpage",
       "url": "https://sportsmartpremium.com/products.html",
-      "name": "All Sports Equipment & Sportswear — Sports Mart Premium",
+      "name": "All Sections Equipment & Sportswear — Sports Mart Premium",
       "description": "Browse the complete range of sports equipment and sportswear at Sports Mart Premium, Kottarakkara.",
       "isPartOf": {"@id": "https://sportsmartpremium.com/#website"},
       "breadcrumb": {
@@ -80,30 +80,56 @@
 <style>
 
 :root{
-  --bg:#d8c454;
-  --bg-soft:#e7d77a;
-  --bg-cream:#f4ebbe;
-  --surface:#f7f1cf;
-  --surface-2:#f1e4ad;
-  --surface-3:#e8d67d;
-  --surface-4:#dcc85a;
+  --bg:#F5DC00;
+  --bg-soft:#FFE65A;
+  --bg-cream:#FFF9D6;
+  --surface:#FFFCE8;
+  --surface-2:#FFF2A6;
+  --surface-3:#FFE359;
+  --surface-4:#F5DC00;
+  --panel:#FFFDF2;
   --ink:#111111;
-  --ink-soft:#4c4431;
-  --muted:#6e634c;
-  --sub:#8b7f63;
-  --accent:#b85a42;
-  --accent-deep:#8e3b2d;
-  --success:#246b3d;
+  --ink-soft:#2B2B2B;
+  --ink-muted:#4A4A4A;
+  --text:#111111;
+  --text-secondary:#2F2F2F;
+  --muted:#595959;
+  --accent:#1A1A1A;
+  --accent-2:#111111;
+  --accent-3:#2B2B2B;
+  --success:#111111;
   --line:rgba(17,17,17,.12);
   --line-2:rgba(17,17,17,.08);
-  --shadow:0 16px 38px rgba(56,43,9,.12);
-  --shadow-strong:0 24px 60px rgba(56,43,9,.16);
+  --shadow:0 18px 44px rgba(17,17,17,.12);
+  --shadow-2:0 26px 70px rgba(17,17,17,.16);
+  --shadow-3:0 12px 28px rgba(17,17,17,.12);
   --radius:24px;
-  --radius-sm:16px;
-  --radius-xs:12px;
-  --font-head:'Barlow Condensed',sans-serif;
-  --font-body:'Barlow',sans-serif;
-  --font-mono:'Space Mono',monospace;
+  --radius-lg:32px;
+  --radius-md:18px;
+  --radius-sm:14px;
+  --pill:999px;
+  --font-head:'Cormorant Garamond', Georgia, serif;
+  --font-body:'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:'Space Mono', monospace;
+
+  /* Legacy aliases used by the existing markup / inline styles */
+  --primary:var(--surface-3);
+  --primary-light:var(--surface);
+  --secondary:var(--ink);
+  --background:var(--bg);
+  --surface-light:#FFFDF2;
+  --text-secondary:var(--text-secondary);
+  --border:var(--line);
+  --card:var(--panel);
+  --card2:var(--surface);
+  --line2:var(--line-2);
+  --fire:var(--ink);
+  --fire2:var(--accent);
+  --acid:var(--bg);
+  --acid2:var(--bg-soft);
+  --gold:#F5DC00;
+  --ice:#4A4A4A;
+  --sub:var(--muted);
 }
 
 *,*::before,*::after{box-sizing:border-box;min-width:0}
@@ -120,10 +146,10 @@ body{
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
   background:
-    radial-gradient(circle at 14% 10%, rgba(184,90,66,.18), transparent 20%),
+    radial-gradient(circle at 14% 10%, rgba(17,17,17,.18), transparent 20%),
     radial-gradient(circle at 88% 8%, rgba(17,17,17,.07), transparent 18%),
     radial-gradient(circle at 50% 110%, rgba(17,17,17,.08), transparent 30%),
-    linear-gradient(180deg, #d8c454 0%, #e5d47a 42%, #f2e7b5 100%);
+    linear-gradient(180deg, #F5DC00 0%, #FFE65A 42%, #FFF9D6 100%);
 }
 body::before{
   content:"";
@@ -132,9 +158,9 @@ body::before{
   z-index:-2;
   pointer-events:none;
   background:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,.22), transparent 16%),
-    radial-gradient(circle at 80% 28%, rgba(184,90,66,.12), transparent 18%),
-    radial-gradient(circle at 50% 75%, rgba(17,17,17,.05), transparent 22%);
+    radial-gradient(circle at 20% 20%, rgba(255,245,204,.34), transparent 16%),
+    radial-gradient(circle at 80% 28%, rgba(17,17,17,.12), transparent 18%),
+    radial-gradient(circle at 50% 75%, rgba(17,17,17,.06), transparent 22%);
   filter:blur(18px);
   animation:bgFloat 20s ease-in-out infinite alternate;
 }
@@ -191,8 +217,11 @@ button,input,select{font:inherit}
   font-family:var(--font-head);
   font-size:1.9rem;
   line-height:.9;
-  text-transform:uppercase;
-  letter-spacing:.06em;
+  font-weight:800;
+  font-style:italic;
+  white-space:nowrap;
+  text-transform:none;
+  letter-spacing:.02em;
   color:var(--ink);
 }
 .brand p{
@@ -253,7 +282,7 @@ button,input,select{font:inherit}
   background:linear-gradient(135deg,var(--success),#2f7d4a);
   border-color:transparent;
   color:#f6fff7;
-  box-shadow:0 14px 26px rgba(36,107,61,.18);
+  box-shadow:0 14px 26px rgba(17,17,17,.18);
 }
 .btn.green:hover{
   filter:saturate(1.04);
@@ -563,7 +592,7 @@ button,input,select{font:inherit}
   font-weight:900;
   letter-spacing:.1em;
   text-transform:uppercase;
-  box-shadow:0 8px 18px rgba(184,90,66,.18);
+  box-shadow:0 8px 18px rgba(17,17,17,.18);
 }
 .product-badge.green{
   background:linear-gradient(135deg,var(--success),#2f8350);
@@ -661,8 +690,8 @@ button,input,select{font:inherit}
   border-color:transparent;
 }
 .small-btn.enquire{
-  background:linear-gradient(135deg, rgba(36,107,61,.16), rgba(36,107,61,.08));
-  border-color:rgba(36,107,61,.20);
+  background:linear-gradient(135deg, rgba(17,17,17,.16), rgba(17,17,17,.08));
+  border-color:rgba(17,17,17,.20);
   color:var(--success);
 }
 .empty-state{
@@ -1131,7 +1160,7 @@ button,input,select{font:inherit}
 <div class="topbar">
   <div class="container topbar-inner">
     <div class="brand">
-      <h1>All Products</h1>
+      <h1><em>Sports Mart</em></h1>
       <p>Products synced with Firebase</p>
     </div>
     <div class="top-actions">
@@ -1144,9 +1173,9 @@ button,input,select{font:inherit}
 <div class="container">
   <section class="hero">
     <div class="hero-panel">
-      <div class="hero-kicker">// Complete catalogue</div>
-      <h2>Browse Every <span class="alt">Product</span></h2>
-      <p>Search products, switch categories, and add items to cart. Everything stays synced with Firebase, and order enquiries open directly in WhatsApp.</p>
+      <div class="hero-kicker">// Sports Mart Premium</div>
+      <h2>Sports <span class="alt">Mart</span></h2>
+      <p>Search products, switch categories, and add items to cart. Sports Mart Premium stays synced with Firebase, and order enquiries open directly in WhatsApp.</p>
       <div class="hero-actions">
         <a href="#catalog" class="btn primary">Shop Now</a>
         <a href="https://wa.me/918921373326?text=Hi%20Sports%20Mart%20Premium%2C%20I%20want%20to%20enquire%20about%20your%20products." class="btn green" target="_blank" rel="noopener">WhatsApp</a>
@@ -1168,8 +1197,8 @@ button,input,select{font:inherit}
       </label>
 
       <div class="select-wrap">
-        <select class="select" id="sportSelect" aria-label="Filter by sport">
-          <option value="All">All Sports</option>
+        <select class="select" id="sportSelect" aria-label="Filter by section">
+          <option value="All">All Sections</option>
         </select>
       </div>
 
@@ -1323,6 +1352,31 @@ button,input,select{font:inherit}
     ready: false,
   };
 
+
+const SECTION_OPTIONS = ["Badminton", "Football", "Cricket", "Volleyball", "Martial arts", "Athletics", "Apparels", "Swimming", "Orthopedics", "Accessories", "Skating"];
+const SECTION_ALIASES = {
+  Basketball: 'Athletics',
+  Fitness: 'Athletics',
+  Sportswear: 'Apparels',
+  Chess: 'Accessories',
+  'Martial Arts': 'Martial arts',
+  'martial arts': 'Martial arts',
+  Apparel: 'Apparels',
+  Equipment: 'Accessories',
+  General: 'Accessories',
+  Training: 'Athletics',
+  Footwear: 'Accessories',
+};
+
+function normalizeSection(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return SECTION_OPTIONS[0];
+  const direct = SECTION_OPTIONS.find(section => section.toLowerCase() === raw.toLowerCase());
+  if (direct) return direct;
+  const alias = SECTION_ALIASES[raw] || SECTION_ALIASES[raw.toLowerCase()];
+  if (alias) return alias;
+  return SECTION_OPTIONS[0];
+}
   let unsubscribeProducts = null;
   let initDone = false;
 
@@ -1360,7 +1414,7 @@ button,input,select{font:inherit}
     return {
       id: String(product?.id || makeId('prod')),
       name: String(product?.name || 'Untitled Product'),
-      sport: String(product?.sport || 'Sportswear'),
+      sport: normalizeSection(product?.sport || 'Accessories'),
       category: String(product?.category || 'General'),
       brand: String(product?.brand || ''),
       badge: String(product?.badge || ''),
@@ -1563,7 +1617,7 @@ button,input,select{font:inherit}
   function getFilteredProducts() {
     const q = state.query.trim().toLowerCase();
     return state.products.filter(product => {
-      const sportOk = state.sport === 'All' || product.sport === state.sport;
+      const sportOk = state.sport === 'All' || normalizeSection(product.sport) === state.sport;
       const categoryOk = state.category === 'All' || product.category === state.category;
       const haystack = [
         product.name,
@@ -1602,14 +1656,13 @@ button,input,select{font:inherit}
   }
 
   function refreshFilterOptions() {
-    const sports = uniqueSorted(state.products.map(p => p.sport));
     const categories = uniqueSorted(state.products.map(p => p.category));
     const currentSport = state.sport;
     const currentCategory = state.category;
 
     if (els.sportSelect) {
-      els.sportSelect.innerHTML = '<option value="All">All Sports</option>' + sports.map(s => `<option value="${safeText(s)}">${safeText(s)}</option>`).join('');
-      els.sportSelect.value = sports.includes(currentSport) ? currentSport : 'All';
+      els.sportSelect.innerHTML = '<option value="All">All Sections</option>' + SECTION_OPTIONS.map(section => `<option value="${safeText(section)}">${safeText(section)}</option>`).join('');
+      els.sportSelect.value = SECTION_OPTIONS.includes(currentSport) ? currentSport : 'All';
     }
     if (els.categorySelect) {
       els.categorySelect.innerHTML = '<option value="All">All Categories</option>' + categories.map(c => `<option value="${safeText(c)}">${safeText(c)}</option>`).join('');
@@ -1660,67 +1713,66 @@ button,input,select{font:inherit}
   }
 
   function renderProducts() {
-    if (!els.productsGrid) return;
-    const filtered = sortProducts(getFilteredProducts());
-    const total = state.products.length;
-    const shown = filtered.length;
+  if (!els.productsGrid) return;
+  const filtered = sortProducts(getFilteredProducts());
+  const total = state.products.length;
+  const shown = filtered.length;
 
-    if (els.resultsCount) {
-      els.resultsCount.textContent = `${shown} product${shown === 1 ? '' : 's'}`;
-    }
-
-    const hintParts = [];
-    if (state.query) hintParts.push(`Search: "${state.query}"`);
-    if (state.sport !== 'All') hintParts.push(state.sport);
-    if (state.category !== 'All') hintParts.push(state.category);
-    if (!hintParts.length) hintParts.push('All products');
-    if (els.filtersHint) els.filtersHint.textContent = hintParts.join(' · ');
-
-    if (els.resultsNote) {
-      els.resultsNote.textContent = total
-        ? `Showing ${shown} of ${total} products from Firebase.`
-        : 'No products are available yet.';
-    }
-
-    if (!filtered.length) {
-      els.productsGrid.innerHTML = `
-        <div class="empty-state">
-          <h3>No products found</h3>
-          <p>Try a different search term or clear the filters.</p>
-        </div>
-      `;
-      return;
-    }
-
-    const groups = new Map();
-    for (const product of filtered) {
-      const key = product.sport || 'Products';
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(product);
-    }
-
-    let html = '';
-    for (const [sport, items] of groups.entries()) {
-      html += `
-        <section class="cat-block" data-sport="${safeText(sport)}">
-          <div class="cat-header">
-            <div class="cat-left">
-              <div class="cat-badge">${safeText((sport || 'P').slice(0,1))}</div>
-              <div>
-                <h3 class="cat-name">${safeText(sport)}</h3>
-                <div class="cat-count">${items.length} item${items.length === 1 ? '' : 's'}</div>
-              </div>
-            </div>
-            <button type="button" class="cat-view" data-action="focus-sport" data-sport="${safeText(sport)}">Filter</button>
-          </div>
-          <div class="products-grid">
-            ${items.map(renderProductCard).join('')}
-          </div>
-        </section>
-      `;
-    }
-    els.productsGrid.innerHTML = html;
+  if (els.resultsCount) {
+    els.resultsCount.textContent = `${shown} product${shown === 1 ? '' : 's'}`;
   }
+
+  const hintParts = [];
+  if (state.query) hintParts.push(`Search: "${state.query}"`);
+  if (state.sport !== 'All') hintParts.push(state.sport);
+  if (state.category !== 'All') hintParts.push(state.category);
+  if (!hintParts.length) hintParts.push('All products');
+  if (els.filtersHint) els.filtersHint.textContent = hintParts.join(' · ');
+
+  if (els.resultsNote) {
+    els.resultsNote.textContent = total
+      ? `Showing ${shown} of ${total} products from Firebase.`
+      : 'No products are available yet.';
+  }
+
+  if (!filtered.length) {
+    els.productsGrid.innerHTML = `
+      <div class="empty-state">
+        <h3>No products found</h3>
+        <p>Try a different search term or clear the filters.</p>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  for (const section of SECTION_OPTIONS) {
+    const items = filtered.filter(product => normalizeSection(product.sport) === section);
+    html += `
+      <section class="cat-block" data-sport="${safeText(section)}">
+        <div class="cat-header">
+          <div class="cat-left">
+            <div class="cat-badge">${safeText((section || 'P').slice(0, 1))}</div>
+            <div>
+              <h3 class="cat-name">${safeText(section)}</h3>
+              <div class="cat-count">${items.length} item${items.length === 1 ? '' : 's'}</div>
+            </div>
+          </div>
+          <button type="button" class="cat-view" data-action="focus-sport" data-sport="${safeText(section)}">Filter</button>
+        </div>
+        <div class="products-grid">
+          ${items.length ? items.map(renderProductCard).join('') : `
+            <div class="empty-state">
+              <h3>No products yet</h3>
+              <p>Add a product to the ${safeText(section)} section from the admin page.</p>
+            </div>
+          `}
+        </div>
+      </section>
+    `;
+  }
+  els.productsGrid.innerHTML = html;
+}
 
   function renderAll() {
     refreshFilterOptions();
