@@ -741,9 +741,9 @@ small.help{
       </div>
 
       <div class="field">
-        <label for="imageUrl">Product image URL</label>
-        <input id="imageUrl" type="text" placeholder="https://example.com/image.jpg or /images/bat.webp" />
-        <small class="help">Paste an image URL or relative path. Firestore stores only the URL, so documents stay small.</small>
+        <label for="imageFile">Product image</label>
+        <input id="imageFile" type="file" accept="image/*" />
+        <small class="help">Choose a clean product photo. It will be stored in Firebase as a base64 image.</small>
       </div>
 
       <div class="preview">
@@ -868,7 +868,7 @@ small.help{
     popular: $('popular'),
     featured: $('featured'),
     tags: $('tags'),
-    imageUrl: $('imageUrl'),
+    imageFile: $('imageFile'),
     previewBox: $('previewBox'),
     previewFallback: $('previewFallback'),
     previewName: $('previewName'),
@@ -1039,7 +1039,6 @@ small.help{
     if (els.popular) els.popular.value = product.popular ?? '';
     if (els.featured) els.featured.value = product.featured ?? '';
     if (els.tags) els.tags.value = Array.isArray(product.tags) ? product.tags.join(', ') : (product.tags || '');
-    if (els.imageUrl) els.imageUrl.value = product.image || '';
     state.previewImage = product.image || '';
     if (els.formTitle) els.formTitle.textContent = 'Edit Product';
     if (els.saveBtn) els.saveBtn.textContent = 'Update Product';
@@ -1328,9 +1327,15 @@ small.help{
       els[key]?.addEventListener('change', renderPreviewFromCurrent);
     });
 
-    els.imageUrl?.addEventListener('input', () => {
-      state.previewImage = String(els.imageUrl?.value || '').trim();
-      renderPreviewFromCurrent();
+    els.imageFile?.addEventListener('change', () => {
+      const file = els.imageFile.files && els.imageFile.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.previewImage = String(reader.result || '');
+        renderPreviewFromCurrent();
+      };
+      reader.readAsDataURL(file);
     });
 
     els.cancelEditBtn?.addEventListener('click', () => resetForm());
