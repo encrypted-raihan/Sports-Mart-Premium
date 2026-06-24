@@ -2545,42 +2545,44 @@ footer{
   .order-sub,.why-point-text,.map-addr,.ir-value,.review-text{font-size:.88rem;line-height:1.7}
 }
 .hero-logo-image{
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
-    width:auto;
-
+    width:100%;
     margin:15px auto 20px;
-
 }
 
 .hero-logo-image img{
-
-    width:auto;
-
-    max-width:480px;   /* adjust 400px-550px as needed */
-
+    width:min(100%, 480px);
     height:auto;
-
     display:block;
-
     object-fit:contain;
-
     filter:drop-shadow(0 10px 18px rgba(0,0,0,.12));
-
     transition:transform .3s ease;
-
 }
 
 .hero-logo-image img:hover{
-
     transform:scale(1.02);
-
 }
+
+/* Tablet */
+@media (max-width: 768px){
+    .hero-logo-image img{
+        max-width:320px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px){
+    .hero-logo-image{
+        margin:10px auto 15px;
+    }
+
+    .hero-logo-image img{
+        max-width:240px;
+    }
+}
+
 </style>
 </head>
 <body>
